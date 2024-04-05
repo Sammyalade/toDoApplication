@@ -1,4 +1,7 @@
 package africa.semicolon.toDoApplication.datas.repositories;
 
-public class TaskRepository {
+import africa.semicolon.toDoApplication.datas.models.Task;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface TaskRepository extends JpaRepository<Task, Integer> {
 }
