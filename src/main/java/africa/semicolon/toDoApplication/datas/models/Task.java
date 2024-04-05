@@ -1,10 +1,8 @@
 package africa.semicolon.toDoApplication.datas.models;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
-import jakarta.persistence.Table;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -19,4 +17,7 @@ public class Task {
     private String description;
     private LocalDate dueDate;
     private Status status;
+    @OneToOne
+    private Notification notification;
+
 }
