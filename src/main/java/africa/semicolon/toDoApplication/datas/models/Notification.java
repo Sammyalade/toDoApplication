@@ -15,6 +15,6 @@ public class Notification {
     @Id
     private int id;
     private String message;
-    private LocalDateTime time;
-    private boolean read;
+    private LocalDateTime time = LocalDateTime.now();
+    private boolean isRead;
 }
