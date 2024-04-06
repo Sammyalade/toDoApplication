@@ -1,4 +1,4 @@
 package africa.semicolon.toDoApplication.services.notificationService;
 
-public class NotificationServiceImpl {
+public class NotificationServiceImpl implements NotificationService {
 }
