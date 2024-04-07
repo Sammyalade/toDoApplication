@@ -2,6 +2,7 @@ package africa.semicolon.toDoApplication.services.notificationService;
 
 import africa.semicolon.toDoApplication.datas.models.Notification;
 import africa.semicolon.toDoApplication.datas.repositories.NotificationRepository;
+import africa.semicolon.toDoApplication.dtos.NotificationTimeChangeRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +38,11 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void changeTime(LocalDateTime time) {
-
+    public void changeTime(NotificationTimeChangeRequest notificationTimeChangeRequest) {
+        Optional<Notification> notification = findById(notificationTimeChangeRequest.getId());
+        if (notification.isPresent()) {
+            notification.get().setTime(notificationTimeChangeRequest.getDateTime());
+            notificationRepository.save(notification.get());
+        }
     }
 }
