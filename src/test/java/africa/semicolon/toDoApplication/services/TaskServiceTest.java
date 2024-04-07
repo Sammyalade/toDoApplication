@@ -8,16 +8,16 @@ import africa.semicolon.toDoApplication.dtos.TaskUpdateRequest;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
 import africa.semicolon.toDoApplication.services.notificationService.NotificationService;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -33,6 +33,11 @@ public class TaskServiceTest {
     @Autowired
     private NotificationService notificationService;
 
+    @BeforeEach
+    public void setUp() {
+        taskRepository.deleteAll();
+    }
+
     @Test
     public void createTask_taskIsCreatedTest() {
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest();
@@ -40,6 +45,7 @@ public class TaskServiceTest {
         taskCreationRequest.setDescription("Description");
         taskCreationRequest.setStatus(Status.IN_PROGRESS);
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
+        taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
         taskCreationRequest.setNotification(notificationService.createNotification("Message"));
         taskService.createTask(taskCreationRequest);
         assertThat(taskRepository.count(), is(1L));
@@ -52,6 +58,7 @@ public class TaskServiceTest {
         taskCreationRequest.setDescription("Description");
         taskCreationRequest.setStatus(Status.IN_PROGRESS);
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
+        taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
         taskCreationRequest.setNotification(notificationService.createNotification("Message"));
         assertThrows(EmptyStringException.class, () -> taskService.createTask(taskCreationRequest));
     }
@@ -63,6 +70,7 @@ public class TaskServiceTest {
         taskCreationRequest.setDescription("Description");
         taskCreationRequest.setStatus(Status.IN_PROGRESS);
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
+        taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
         taskCreationRequest.setNotification(notificationService.createNotification("Message"));
         Task task = taskService.createTask(taskCreationRequest);
         TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest();
@@ -81,7 +89,7 @@ public class TaskServiceTest {
         taskCreationRequest.setDescription("Description");
         taskCreationRequest.setStatus(Status.IN_PROGRESS);
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
-        taskCreationRequest.setNotificationTime(LocalTime.parse("9:00"));
+        taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
         taskCreationRequest.setNotification(notificationService.createNotification("Message"));
         Task task = taskService.createTask(taskCreationRequest);
         TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest();
@@ -94,7 +102,21 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void createTask_updateTaskNotification_taskNotificationIsUpdatedTest() {
-
+    public void createTask_updateTaskDate_taskNotificationIsUpdatedTest() {
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest();
+        taskCreationRequest.setTitle("Title");
+        taskCreationRequest.setDescription("Description");
+        taskCreationRequest.setStatus(Status.IN_PROGRESS);
+        taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
+        taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
+        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        Task task = taskService.createTask(taskCreationRequest);
+        TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest();
+        taskUpdateRequest.setId(task.getId());
+        taskUpdateRequest.setDueDate(LocalDate.parse("2024-12-29"));
+        taskService.updateTaskDueDate(taskUpdateRequest);
+        Optional<Task> updatedTask = taskService.searchForTaskById(task.getId());
+        Task task1 = updatedTask.get();
+        assertThat(task1.getNotification().getTime(), is(LocalDateTime.of(LocalDate.parse("2024-12-29"), LocalTime.parse("09:00"))));
     }
 }
