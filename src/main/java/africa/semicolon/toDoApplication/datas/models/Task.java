@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Table(name="task_table")
 public class Task {
     @Id
+    @GeneratedValue
     private int id;
     private String title;
     private String description;
