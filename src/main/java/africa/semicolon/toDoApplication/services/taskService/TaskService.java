@@ -13,7 +13,6 @@ public interface TaskService {
     void updateTaskStatus(TaskUpdateRequest taskUpdateRequest);
     void deleteTask(TaskDeleteRequest taskDeleteRequest);
     void updateTaskDueDate(TaskUpdateRequest taskUpdateRequest);
-    void setTaskReminder(TaskUpdateRequest taskUpdateRequest);
-
+    void updateTaskNotification(TaskUpdateRequest taskUpdateRequest);
     Optional<Task> searchForTaskById(int id);
 }
