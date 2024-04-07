@@ -2,6 +2,7 @@ package africa.semicolon.toDoApplication.services;
 
 import africa.semicolon.toDoApplication.datas.models.Status;
 import africa.semicolon.toDoApplication.datas.models.Task;
+import africa.semicolon.toDoApplication.datas.models.TaskList;
 import africa.semicolon.toDoApplication.datas.repositories.NotificationRepository;
 import africa.semicolon.toDoApplication.datas.repositories.TaskRepository;
 import africa.semicolon.toDoApplication.dtos.TaskCreationRequest;
