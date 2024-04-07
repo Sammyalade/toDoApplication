@@ -4,6 +4,7 @@ import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.models.TaskList;
 import africa.semicolon.toDoApplication.datas.repositories.TaskListRepository;
 import africa.semicolon.toDoApplication.dtos.TaskCreationInTaskListRequest;
+import africa.semicolon.toDoApplication.dtos.TaskSearchInTaskListRequest;
 import africa.semicolon.toDoApplication.dtos.TaskUpdateInTaskListRequest;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class TaskListServiceImpl implements TaskListService{
     }
 
     @Override
-    public void createTaskInATaskList(TaskCreationInTaskListRequest taskCreationInTaskListRequest){
+    public Task createTaskInATaskList(TaskCreationInTaskListRequest taskCreationInTaskListRequest){
         Task task = taskService.createTask(taskCreationInTaskListRequest);
         Optional<TaskList> taskList = searchForTaskListById(taskCreationInTaskListRequest.getId());
         if(taskList.isPresent()){
@@ -45,6 +46,7 @@ public class TaskListServiceImpl implements TaskListService{
             taskList1.getTasks().add(task);
             taskListRepository.save(taskList1);
         }
+        return task;
     }
 
     @Override
@@ -58,5 +60,21 @@ public class TaskListServiceImpl implements TaskListService{
         if(taskList.isPresent()){
             taskService.updateTaskDueDate(taskUpdateInTaskListRequest);
         }
+        taskListRepository.save(taskList.get());
+    }
+
+    @Override
+    public Task searchForTaskById(TaskSearchInTaskListRequest taskSearchInTaskListRequest) {
+        Task task1 = null;
+        Optional<TaskList> taskList = searchForTaskListById(taskSearchInTaskListRequest.getTaskListId());
+        if(taskList.isPresent()){
+            TaskList taskList1 = taskList.get();
+            List<Task> tasks = taskList1.getTasks();
+            Optional<Task> optionalTask = tasks.stream()
+                    .filter(task -> task.getId() == taskSearchInTaskListRequest.getTaskId())
+                    .findFirst();
+            task1 = optionalTask.get();
+        }
+        return task1;
     }
 }
