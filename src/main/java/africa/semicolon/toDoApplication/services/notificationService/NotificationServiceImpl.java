@@ -5,6 +5,7 @@ import africa.semicolon.toDoApplication.datas.repositories.NotificationRepositor
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -26,12 +27,17 @@ public class NotificationServiceImpl implements NotificationService {
             notification.setRead(true);
             notificationRepository.save(notification);
         });
-
-
     }
+
+
 
     @Override
     public Optional<Notification> findById(int id) {
         return notificationRepository.findById(id);
+    }
+
+    @Override
+    public void changeTime(LocalDateTime time) {
+
     }
 }
