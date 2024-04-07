@@ -8,6 +8,8 @@ import africa.semicolon.toDoApplication.dtos.TaskNotificationTimeChangeRequest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Mapper {
 
@@ -38,5 +40,11 @@ public class Mapper {
         taskNotificationTimeChangeRequest.setId(id);
         taskNotificationTimeChangeRequest.setTime(date);
         return taskNotificationTimeChangeRequest;
+    }
+
+    public static List<?> checkIfListIsNull(List<?> lists) {
+        if(lists == null) lists = new ArrayList<>();
+
+        return lists;
     }
 }
