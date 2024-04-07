@@ -1,13 +1,21 @@
 package africa.semicolon.toDoApplication.services.taskList;
 
-import africa.semicolon.toDoApplication.dtos.TaskListCreationRequest;
-import africa.semicolon.toDoApplication.dtos.TaskListUpdateRequest;
+import africa.semicolon.toDoApplication.datas.models.Task;
+import africa.semicolon.toDoApplication.datas.models.TaskList;
+import africa.semicolon.toDoApplication.dtos.TaskCreationInTaskListRequest;
+import africa.semicolon.toDoApplication.dtos.TaskUpdateInTaskListRequest;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface TaskListService {
 
-    void createTaskList(TaskListCreationRequest taskListCreationRequest);
-    void updateTaskList(TaskListUpdateRequest taskListUpdateRequest);
-    void getTaskListForUser(String username);
-    void deleteTaskList(String username);
+    TaskList createTaskList();
+    List<Task> getTaskListForUser(String username);
 
+    void createTaskInATaskList(TaskCreationInTaskListRequest taskCreationInTaskListRequest);
+
+    Optional<TaskList> searchForTaskListById(long id);
+
+    void editTaskInTaskList(TaskUpdateInTaskListRequest taskUpdateInTaskListRequest);
 }
