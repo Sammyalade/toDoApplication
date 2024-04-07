@@ -6,24 +6,33 @@ import africa.semicolon.toDoApplication.dtos.NotificationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class NotificationServiceImpl implements NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
     @Override
-    public void createNotification(NotificationRequest notificationRequest) {
+    public Notification createNotification(String message) {
         Notification notification = new Notification();
-        notification.setMessage(notificationRequest.getMessage());
+        notification.setMessage(message);
         notificationRepository.save(notification);
+        return notification;
+    }
+
+
+    @Override
+    public void markNotificationAsRead(int id) {
+        findById(id).ifPresent(notification -> {
+            notification.setRead(true);
+            notificationRepository.save(notification);
+        });
+
+
     }
 
     @Override
-    public void getNotificationForTask(NotificationRequest notificationRequest) {
-
-    }
-
-    @Override
-    public void markNotificationAsRead(NotificationRequest notificationRequest) {
-
+    public Optional<Notification> findById(int id) {
+        return notificationRepository.findById(id);
     }
 }
