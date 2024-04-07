@@ -1,7 +1,12 @@
 package africa.semicolon.toDoApplication.utility;
 
+import africa.semicolon.toDoApplication.datas.models.Notification;
 import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.dtos.TaskCreationRequest;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class Mapper {
 
@@ -10,9 +15,16 @@ public class Mapper {
         task.setTitle(taskCreationRequest.getTitle());
         task.setDescription(taskCreationRequest.getDescription());
         task.setStatus(taskCreationRequest.getStatus());
-        task.setNotification(taskCreationRequest.getNotification());
+        Notification notification = taskCreationRequest.getNotification();
+        notification.setTime(mergeDateAndTime(taskCreationRequest.getDueDate(),
+                taskCreationRequest.getNotificationTime()));
         task.setDueDate(taskCreationRequest.getDueDate());
+
         return task;
+    }
+
+    private static LocalDateTime mergeDateAndTime(LocalDate date, LocalTime time) {
+        return LocalDateTime.of(date, time);
     }
 
     public static boolean IsEmptyString(String title) {
