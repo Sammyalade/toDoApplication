@@ -52,7 +52,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void setTaskReminder(TaskUpdateRequest taskUpdateRequest) {
+    public void updateTaskNotification(TaskUpdateRequest taskUpdateRequest) {
 
     }
 
