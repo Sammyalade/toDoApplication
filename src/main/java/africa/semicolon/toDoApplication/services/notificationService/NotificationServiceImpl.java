@@ -2,7 +2,6 @@ package africa.semicolon.toDoApplication.services.notificationService;
 
 import africa.semicolon.toDoApplication.datas.models.Notification;
 import africa.semicolon.toDoApplication.datas.repositories.NotificationRepository;
-import africa.semicolon.toDoApplication.dtos.NotificationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
