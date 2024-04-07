@@ -17,6 +17,6 @@ public class Notification {
     @GeneratedValue
     private int id;
     private String message;
-    private LocalDateTime time = LocalDateTime.now();
+    private LocalDateTime time;
     private boolean isRead;
 }
