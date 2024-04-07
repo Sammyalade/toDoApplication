@@ -10,7 +10,6 @@ import africa.semicolon.toDoApplication.dtos.TaskNotificationTimeChangeRequest;
 import africa.semicolon.toDoApplication.dtos.TaskUpdateRequest;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -49,7 +48,12 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void deleteTask(TaskDeleteRequest taskDeleteRequest) {
-
+        Optional<Task> task = searchForTaskById(taskDeleteRequest.getId());
+        if(task.isPresent()) {
+            Notification notification = task.get().getNotification();
+            taskRepository.delete(task.get());
+            notificationRepository.delete(notification);
+        }
     }
 
     @Override
@@ -71,7 +75,7 @@ public class TaskServiceImpl implements TaskService {
             LocalTime time = dateTime.toLocalTime();
             dateTime = LocalDateTime.of(taskNotificationTimeChangeRequest.getTime(), time);
             task.get().getNotification().setTime(dateTime);
-
+            notificationRepository.save(task.get().getNotification());
             taskRepository.save(task.get());
         }
     }
