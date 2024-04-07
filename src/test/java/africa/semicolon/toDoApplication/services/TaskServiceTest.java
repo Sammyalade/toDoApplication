@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -80,6 +81,7 @@ public class TaskServiceTest {
         taskCreationRequest.setDescription("Description");
         taskCreationRequest.setStatus(Status.IN_PROGRESS);
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
+        taskCreationRequest.setNotificationTime(LocalTime.parse("9:00"));
         taskCreationRequest.setNotification(notificationService.createNotification("Message"));
         Task task = taskService.createTask(taskCreationRequest);
         TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest();
@@ -92,5 +94,7 @@ public class TaskServiceTest {
     }
 
     @Test
-    public void createTask_searchForTaskBy
+    public void createTask_updateTaskNotification_taskNotificationIsUpdatedTest() {
+
+    }
 }
