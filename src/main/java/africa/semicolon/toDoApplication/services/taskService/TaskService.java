@@ -3,20 +3,17 @@ package africa.semicolon.toDoApplication.services.taskService;
 import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.dtos.TaskCreationRequest;
 import africa.semicolon.toDoApplication.dtos.TaskDeleteRequest;
-import africa.semicolon.toDoApplication.dtos.TaskSearchRequest;
 import africa.semicolon.toDoApplication.dtos.TaskUpdateRequest;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface TaskService {
 
-    void createTask(TaskCreationRequest taskCreationRequest);
-    void updateTask(TaskUpdateRequest taskUpdateRequest);
+    Task createTask(TaskCreationRequest taskCreationRequest);
+    void updateTaskStatus(TaskUpdateRequest taskUpdateRequest);
     void deleteTask(TaskDeleteRequest taskDeleteRequest);
-    void markTaskAsCompleted(TaskUpdateRequest taskUpdateRequest);
-    void searchTask(TaskSearchRequest taskSearchRequest);
-    void setTaskDueDate(TaskUpdateRequest taskUpdateRequest);
-    void setTaskStatus(TaskUpdateRequest taskUpdateRequest);
+    void updateTaskDueDate(TaskUpdateRequest taskUpdateRequest);
     void setTaskReminder(TaskUpdateRequest taskUpdateRequest);
 
+    Optional<Task> searchForTaskById(int id);
 }
