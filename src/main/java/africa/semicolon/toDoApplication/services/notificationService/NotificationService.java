@@ -2,6 +2,7 @@ package africa.semicolon.toDoApplication.services.notificationService;
 
 import africa.semicolon.toDoApplication.datas.models.Notification;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface NotificationService {
@@ -11,4 +12,6 @@ public interface NotificationService {
     void markNotificationAsRead(int id);
 
     Optional<Notification> findById(int id);
+
+    void changeTime(LocalDateTime time);
 }
