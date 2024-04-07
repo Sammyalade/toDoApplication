@@ -3,6 +3,7 @@ package africa.semicolon.toDoApplication.utility;
 import africa.semicolon.toDoApplication.datas.models.Notification;
 import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.dtos.TaskCreationRequest;
+import africa.semicolon.toDoApplication.dtos.TaskNotificationTimeChangeRequest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ public class Mapper {
         Notification notification = taskCreationRequest.getNotification();
         notification.setTime(mergeDateAndTime(taskCreationRequest.getDueDate(),
                 taskCreationRequest.getNotificationTime()));
+        task.setNotification(notification);
         task.setDueDate(taskCreationRequest.getDueDate());
 
         return task;
@@ -29,5 +31,12 @@ public class Mapper {
 
     public static boolean IsEmptyString(String title) {
         return title.isEmpty();
+    }
+
+    public static TaskNotificationTimeChangeRequest map(int id, LocalDate date){
+        TaskNotificationTimeChangeRequest taskNotificationTimeChangeRequest = new TaskNotificationTimeChangeRequest();
+        taskNotificationTimeChangeRequest.setId(id);
+        taskNotificationTimeChangeRequest.setTime(date);
+        return taskNotificationTimeChangeRequest;
     }
 }
