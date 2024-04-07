@@ -17,6 +17,7 @@ public class NotificationServiceImpl implements NotificationService {
     public Notification createNotification(String message) {
         Notification notification = new Notification();
         notification.setMessage(message);
+
         notificationRepository.save(notification);
         return notification;
     }
