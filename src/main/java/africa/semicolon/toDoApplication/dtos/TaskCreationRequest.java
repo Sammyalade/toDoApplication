@@ -5,6 +5,7 @@ import africa.semicolon.toDoApplication.datas.models.Status;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Data
 public class TaskCreationRequest {
@@ -14,4 +15,5 @@ public class TaskCreationRequest {
     private LocalDate dueDate;
     private Status status;
     private Notification notification;
+    private LocalTime notificationTime;
 }
