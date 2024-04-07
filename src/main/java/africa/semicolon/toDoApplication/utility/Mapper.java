@@ -11,6 +11,11 @@ public class Mapper {
         task.setDescription(taskCreationRequest.getDescription());
         task.setStatus(taskCreationRequest.getStatus());
         task.setNotification(taskCreationRequest.getNotification());
+        task.setDueDate(taskCreationRequest.getDueDate());
         return task;
+    }
+
+    public static boolean IsEmptyString(String title) {
+        return title.isEmpty();
     }
 }
