@@ -16,5 +16,5 @@ public interface TaskService {
     void deleteTask(TaskDeleteRequest taskDeleteRequest);
     void updateTaskDueDate(TaskUpdateRequest taskUpdateRequest);
     void updateTaskNotificationTime(TaskNotificationTimeChangeRequest taskNotificationTimeChangeRequest);
-    Optional<Task> searchForTaskById(int id);
+    Task searchForTaskById(int id);
 }
