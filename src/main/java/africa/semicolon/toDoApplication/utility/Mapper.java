@@ -1,9 +1,6 @@
 package africa.semicolon.toDoApplication.utility;
 
-import africa.semicolon.toDoApplication.datas.models.Notification;
-import africa.semicolon.toDoApplication.datas.models.Task;
-import africa.semicolon.toDoApplication.datas.models.TaskList;
-import africa.semicolon.toDoApplication.datas.models.User;
+import africa.semicolon.toDoApplication.datas.models.*;
 import africa.semicolon.toDoApplication.dtos.TaskCreationRequest;
 import africa.semicolon.toDoApplication.dtos.TaskNotificationTimeChangeRequest;
 import africa.semicolon.toDoApplication.dtos.UserRegistrationRequest;
@@ -21,11 +18,12 @@ public class Mapper {
         Task task = new Task();
         task.setTitle(taskCreationRequest.getTitle());
         task.setDescription(taskCreationRequest.getDescription());
-        task.setStatus(taskCreationRequest.getStatus());
+        task.setStatus(Status.CREATED);
         Notification notification = taskCreationRequest.getNotification();
         notification.setTime(mergeDateAndTime(taskCreationRequest.getDueDate(),
                 taskCreationRequest.getNotificationTime()));
         task.setNotification(notification);
+        task.setPriority(Priority.NO_PRIORITY);
         task.setDueDate(taskCreationRequest.getDueDate());
 
         return task;
