@@ -18,6 +18,7 @@ public class Task {
     private String description;
     private LocalDate dueDate;
     private Status status;
+    private Priority priority;
     @OneToOne
     private Notification notification;
 
