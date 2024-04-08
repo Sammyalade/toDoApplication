@@ -34,9 +34,8 @@ public class NotificationServiceTest {
     public void readNotification_notificationIsReadTest() {
         Notification notification = notificationService.createNotification("message");
         notificationService.markNotificationAsRead(notification.getId());
-        Optional<Notification> retrievedNotification = notificationService.findById(notification.getId());
-        Notification readNotification = retrievedNotification.get();
-        assertThat(readNotification.isRead(), is(true));
+        Notification retrievedNotification = notificationService.searchNotificationById(notification.getId());
+        assertThat(retrievedNotification.isRead(), is(true));
         assertThat(notificationRepository.count(), is(1L));
     }
 
@@ -47,8 +46,7 @@ public class NotificationServiceTest {
         notificationTimeChangeRequest.setDateTime(LocalDateTime.of(LocalDate.parse("2021-12-12"), LocalTime.parse("09:00")));
         notificationTimeChangeRequest.setId(notification.getId());
         notificationService.changeTime(notificationTimeChangeRequest);
-        Optional<Notification> retrievedNotification = notificationService.findById(notification.getId());
-        Notification updatedNotification = retrievedNotification.get();
-        assertThat(updatedNotification.getTime(), is(LocalDateTime.of(LocalDate.parse("2021-12-12"), LocalTime.parse("09:00"))));
+        Notification retrievedNotification = notificationService.searchNotificationById(notification.getId());
+        assertThat(retrievedNotification.getTime(), is(LocalDateTime.of(LocalDate.parse("2021-12-12"), LocalTime.parse("09:00"))));
     }
 }
