@@ -6,6 +6,7 @@ import africa.semicolon.toDoApplication.datas.models.TaskList;
 import africa.semicolon.toDoApplication.datas.repositories.TaskListRepository;
 import africa.semicolon.toDoApplication.datas.repositories.TaskRepository;
 import africa.semicolon.toDoApplication.dtos.*;
+import africa.semicolon.toDoApplication.exception.TaskListNotFoundException;
 import africa.semicolon.toDoApplication.services.notificationService.NotificationService;
 import africa.semicolon.toDoApplication.services.taskList.TaskListService;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
@@ -16,8 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
@@ -82,6 +83,35 @@ public class TaskListServiceTest {
     }
 
     @Test
-    public void
+    public void createTask_addToTaskListThatDoesNotExist_throwsExceptionTest(){
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest();
+        taskCreationRequest.setTitle("Title");
+        taskCreationRequest.setDescription("description");
+        taskCreationRequest.setStatus(Status.IN_PROGRESS);
+        taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
+        taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
+        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        Task task = taskService.createTask(taskCreationRequest);
+        AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
+        addTaskToTaskListRequest.setTaskListId(11);
+        addTaskToTaskListRequest.setTaskId(task.getId());
+        assertThatThrownBy(() -> {
+            taskListService.addTaskToTaskList(addTaskToTaskListRequest);
+        })
+                .isInstanceOf(TaskListNotFoundException.class)
+                .hasMessageContaining("TaskList not found");
+    }
+
+    @Test
+    public void RemoveTaskFromTaskListThatDoesNotExist_throwsExceptionTest(){
+        AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
+        addTaskToTaskListRequest.setTaskListId(11);
+        addTaskToTaskListRequest.setTaskId(1);
+        assertThatThrownBy(() -> {
+            taskListService.addTaskToTaskList(addTaskToTaskListRequest);
+        })
+                .isInstanceOf(TaskListNotFoundException.class)
+                .hasMessageContaining("TaskList not found");
+    }
 
 }
