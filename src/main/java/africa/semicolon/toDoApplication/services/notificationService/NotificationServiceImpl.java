@@ -46,4 +46,14 @@ public class NotificationServiceImpl implements NotificationService {
             notificationRepository.save(notification.get());
         }
     }
+
+    @Override
+    public void save(Notification notification) {
+        notificationRepository.save(notification);
+    }
+
+    @Override
+    public void delete(Notification notification) {
+        notificationRepository.delete(notification);
+    }
 }
