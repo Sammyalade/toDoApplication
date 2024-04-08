@@ -2,13 +2,14 @@ package africa.semicolon.toDoApplication.services.taskService;
 
 import africa.semicolon.toDoApplication.datas.models.Notification;
 import africa.semicolon.toDoApplication.datas.models.Task;
-import africa.semicolon.toDoApplication.datas.repositories.NotificationRepository;
 import africa.semicolon.toDoApplication.datas.repositories.TaskRepository;
 import africa.semicolon.toDoApplication.dtos.TaskCreationRequest;
 import africa.semicolon.toDoApplication.dtos.TaskDeleteRequest;
 import africa.semicolon.toDoApplication.dtos.TaskNotificationTimeChangeRequest;
 import africa.semicolon.toDoApplication.dtos.TaskUpdateRequest;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
+import africa.semicolon.toDoApplication.exception.TaskNotFoundException;
+import africa.semicolon.toDoApplication.services.notificationService.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +25,14 @@ public class TaskServiceImpl implements TaskService {
     @Autowired
     private TaskRepository taskRepository;
     @Autowired
-    private NotificationRepository notificationRepository;
+    private NotificationService notificationService;
+
     @Override
     public Task createTask(TaskCreationRequest taskCreationRequest) {
         if(IsEmptyString(taskCreationRequest.getTitle())) throw new EmptyStringException("Title cannot be empty");
         Task task = map(taskCreationRequest);
         Notification notification = task.getNotification();
-        notificationRepository.save(notification);
+        notificationService.save(notification);
         taskRepository.save(task);
         return task;
     }
@@ -39,49 +41,45 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void updateTaskStatus(TaskUpdateRequest taskUpdateRequest) {
-        Optional<Task> task = searchForTaskById(taskUpdateRequest.getId());
-        if(task.isPresent()) {
-            task.get().setStatus(taskUpdateRequest.getStatus());
-            taskRepository.save(task.get());
-        }
+        Task task = searchForTaskById(taskUpdateRequest.getId());
+        task.setStatus(taskUpdateRequest.getStatus());
+        taskRepository.save(task);
     }
 
     @Override
     public void deleteTask(TaskDeleteRequest taskDeleteRequest) {
-        Optional<Task> task = searchForTaskById(taskDeleteRequest.getId());
-        if(task.isPresent()) {
-            Notification notification = task.get().getNotification();
-            taskRepository.delete(task.get());
-            notificationRepository.delete(notification);
-        }
+        Task task = searchForTaskById(taskDeleteRequest.getId());
+        Notification notification = task.getNotification();
+        taskRepository.delete(task);
+        notificationService.delete(notification);
     }
 
     @Override
     public void updateTaskDueDate(TaskUpdateRequest taskUpdateRequest) {
         updateTaskNotificationTime(map(taskUpdateRequest.getId(), taskUpdateRequest.getDueDate()));
-        Optional<Task> task = searchForTaskById(taskUpdateRequest.getId());
-        if(task.isPresent()) {
-            task.get().setDueDate(taskUpdateRequest.getDueDate());
-
-            taskRepository.save(task.get());
-        }
+        Task task = searchForTaskById(taskUpdateRequest.getId());
+        task.setDueDate(taskUpdateRequest.getDueDate());
+        taskRepository.save(task);
     }
 
     @Override
     public void updateTaskNotificationTime(TaskNotificationTimeChangeRequest taskNotificationTimeChangeRequest) {
-        Optional<Task> task = searchForTaskById(taskNotificationTimeChangeRequest.getId());
-        if(task.isPresent()) {
-            LocalDateTime dateTime = task.get().getNotification().getTime();
-            LocalTime time = dateTime.toLocalTime();
-            dateTime = LocalDateTime.of(taskNotificationTimeChangeRequest.getTime(), time);
-            task.get().getNotification().setTime(dateTime);
-            notificationRepository.save(task.get().getNotification());
-            taskRepository.save(task.get());
-        }
+        Task task = searchForTaskById(taskNotificationTimeChangeRequest.getId());
+        LocalDateTime dateTime = task.getNotification().getTime();
+        LocalTime time = dateTime.toLocalTime();
+        dateTime = LocalDateTime.of(taskNotificationTimeChangeRequest.getTime(), time);
+        task.getNotification().setTime(dateTime);
+        notificationService.save(task.getNotification());
+        taskRepository.save(task);
+
     }
 
     @Override
-    public Optional<Task> searchForTaskById(int id) {
-        return taskRepository.findById(id);
+    public Task searchForTaskById(int id) {
+        Optional<Task> optionalTask = taskRepository.findById(id);
+        if(optionalTask.isPresent()) {
+            return optionalTask.get();
+        }
+        throw new TaskNotFoundException("Task not found");
     }
 }
