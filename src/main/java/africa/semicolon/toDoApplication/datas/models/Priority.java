@@ -4,5 +4,8 @@ import java.util.EnumMap;
 
 public enum Priority {
 
-    HIGH_PRIORITY, MEDIUM_PRIORITY, LOW_PRIORITY, NO_PRIORITY
+    NO_PRIORITY,
+    LOW_PRIORITY,
+    MEDIUM_PRIORITY,
+    HIGH_PRIORITY
 }
