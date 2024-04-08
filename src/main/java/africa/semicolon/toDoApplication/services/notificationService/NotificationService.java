@@ -15,4 +15,8 @@ public interface NotificationService {
     Optional<Notification> findById(int id);
 
     void changeTime(NotificationTimeChangeRequest notificationTimeChangeRequest);
+
+    void save(Notification notification);
+
+    void delete(Notification notification);
 }
