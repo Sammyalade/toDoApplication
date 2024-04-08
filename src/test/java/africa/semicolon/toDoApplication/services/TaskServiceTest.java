@@ -52,7 +52,6 @@ public class TaskServiceTest {
         TaskCreationRequest taskCreationRequest = new TaskCreationRequest();
         taskCreationRequest.setTitle("Title");
         taskCreationRequest.setDescription("Description");
-        taskCreationRequest.setStatus(Status.IN_PROGRESS);
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
         taskCreationRequest.setNotification(notificationService.createNotification("Message"));
