@@ -11,12 +11,11 @@ public interface NotificationService {
     Notification createNotification(String message);
 
     void markNotificationAsRead(int id);
-
-    Optional<Notification> findById(int id);
-
     void changeTime(NotificationTimeChangeRequest notificationTimeChangeRequest);
 
     void save(Notification notification);
 
     void delete(Notification notification);
+
+    Notification searchNotificationById(int id);
 }
