@@ -7,6 +7,8 @@ import africa.semicolon.toDoApplication.dtos.AddTaskToTaskListRequest;
 import africa.semicolon.toDoApplication.dtos.TaskCreationInTaskListRequest;
 import africa.semicolon.toDoApplication.dtos.TaskSearchInTaskListRequest;
 import africa.semicolon.toDoApplication.dtos.TaskUpdateInTaskListRequest;
+import africa.semicolon.toDoApplication.exception.TaskListNotFoundException;
+import africa.semicolon.toDoApplication.exception.TaskNotFoundException;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,31 +35,32 @@ public class TaskListServiceImpl implements TaskListService{
 
     @Override
     public void addTaskToTaskList(AddTaskToTaskListRequest addTaskToTaskListRequest) {
-        Optional<TaskList> optionalTaskList = taskListRepository.findById(addTaskToTaskListRequest.getTaskListId());
-        if(optionalTaskList.isPresent()) {
-            TaskList taskList = optionalTaskList.get();
-            taskList.setTasks((List<Task>) checkIfListIsNull(taskList.getTasks()));
-            Optional<Task> task = taskService.searchForTaskById(addTaskToTaskListRequest.getTaskId());
-            if(task.isPresent()) {
-                taskList.getTasks().add(task.get());
-                taskListRepository.save(taskList);
-            }
-        }
+        TaskList taskList = searchForTaskList(addTaskToTaskListRequest.getTaskListId());
+        taskList.setTasks((List<Task>) checkIfListIsNull(taskList.getTasks()));
+        Task task = taskService.searchForTaskById(addTaskToTaskListRequest.getTaskId());
+        taskList.getTasks().add(task);
+        taskListRepository.save(taskList);
+
+
     }
 
     @Override
     public void removeTaskFromList(AddTaskToTaskListRequest addTaskToTaskListRequest) {
-        Optional<TaskList> optionalTaskList = taskListRepository.findById(addTaskToTaskListRequest.getTaskListId());
-        if(optionalTaskList.isPresent()) {
-            TaskList taskList = optionalTaskList.get();
-            taskList.setTasks((List<Task>) checkIfListIsNull(taskList.getTasks()));
-            Optional<Task> task = taskService.searchForTaskById(addTaskToTaskListRequest.getTaskId());
-            if (task.isPresent()) {
-                taskList.getTasks().remove(task.get());
-                taskListRepository.save(taskList);
-            }
-        }
+        TaskList taskList = searchForTaskList(addTaskToTaskListRequest.getTaskListId());
+        taskList.setTasks((List<Task>) checkIfListIsNull(taskList.getTasks()));
+        Task task = taskService.searchForTaskById(addTaskToTaskListRequest.getTaskId());
+        taskList.getTasks().remove(task);
+        taskListRepository.save(taskList);
     }
+
+    private TaskList searchForTaskList(long taskListId) {
+        Optional<TaskList> optionalTaskList = taskListRepository.findById(taskListId);
+        if(optionalTaskList.isPresent()) {
+            return optionalTaskList.get();
+        }
+        throw new TaskListNotFoundException("TaskList not found");
+    }
+
 
 
 }
