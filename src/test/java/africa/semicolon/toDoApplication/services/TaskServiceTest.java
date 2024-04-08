@@ -9,6 +9,8 @@ import africa.semicolon.toDoApplication.dtos.TaskCreationRequest;
 import africa.semicolon.toDoApplication.dtos.TaskDeleteRequest;
 import africa.semicolon.toDoApplication.dtos.TaskUpdateRequest;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
+import africa.semicolon.toDoApplication.exception.TaskListNotFoundException;
+import africa.semicolon.toDoApplication.exception.TaskNotFoundException;
 import africa.semicolon.toDoApplication.services.notificationService.NotificationService;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,6 +23,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -41,6 +44,7 @@ public class TaskServiceTest {
     @BeforeEach
     public void setUp() {
         taskRepository.deleteAll();
+        notificationRepository.deleteAll();
     }
 
     @Test
@@ -82,9 +86,8 @@ public class TaskServiceTest {
         taskUpdateRequest.setId(task.getId());
         taskUpdateRequest.setStatus(Status.COMPLETED);
         taskService.updateTaskStatus(taskUpdateRequest);
-        Optional<Task> updatedTask = taskService.searchForTaskById(task.getId());
-        Task task1 = updatedTask.get();
-        assertThat(task1.getStatus(), is(Status.COMPLETED));
+        Task updatedTask = taskService.searchForTaskById(task.getId());
+        assertThat(updatedTask.getStatus(), is(Status.COMPLETED));
     }
 
     @Test
@@ -101,9 +104,8 @@ public class TaskServiceTest {
         taskUpdateRequest.setId(task.getId());
         taskUpdateRequest.setDueDate(LocalDate.parse("2024-12-29"));
         taskService.updateTaskDueDate(taskUpdateRequest);
-        Optional<Task> updatedTask = taskService.searchForTaskById(task.getId());
-        Task task1 = updatedTask.get();
-        assertThat(task1.getDueDate(), is(LocalDate.parse("2024-12-29")));
+        Task updatedTask = taskService.searchForTaskById(task.getId());
+        assertThat(updatedTask.getDueDate(), is(LocalDate.parse("2024-12-29")));
     }
 
     @Test
@@ -120,9 +122,8 @@ public class TaskServiceTest {
         taskUpdateRequest.setId(task.getId());
         taskUpdateRequest.setDueDate(LocalDate.parse("2024-12-29"));
         taskService.updateTaskDueDate(taskUpdateRequest);
-        Optional<Task> updatedTask = taskService.searchForTaskById(task.getId());
-        Task task1 = updatedTask.get();
-        assertThat(task1.getNotification().getTime(), is(LocalDateTime.of(LocalDate.parse("2024-12-29"), LocalTime.parse("09:00"))));
+        Task updatedTask = taskService.searchForTaskById(task.getId());
+        assertThat(updatedTask.getNotification().getTime(), is(LocalDateTime.of(LocalDate.parse("2024-12-29"), LocalTime.parse("09:00"))));
     }
 
     @Test
@@ -140,5 +141,14 @@ public class TaskServiceTest {
         taskService.deleteTask(taskDeleteRequest);
         assertThat(taskRepository.count(), is(0L));
         assertThat(notificationRepository.count(), is(0L));
+    }
+
+    @Test
+    public void searchForTaskThatDoesNotExist_throwsExceptionTest(){
+        assertThatThrownBy(() -> {
+            taskService.searchForTaskById(11);
+        })
+                .isInstanceOf(TaskNotFoundException.class)
+                .hasMessageContaining("Task not found");
     }
 }
