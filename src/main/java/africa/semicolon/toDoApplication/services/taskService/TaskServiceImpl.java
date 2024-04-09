@@ -12,7 +12,6 @@ import africa.semicolon.toDoApplication.services.notificationService.Notificatio
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static africa.semicolon.toDoApplication.utility.Mapper.map;
@@ -41,7 +40,6 @@ public class TaskServiceImpl implements TaskService {
     public void updateTask(TaskUpdateRequest taskUpdateRequest) {
         Task task = searchForTaskById(taskUpdateRequest.getId());
         checkForUpdate(taskUpdateRequest, task);
-        notificationService.save(task.getNotification());
         taskRepository.save(task);
     }
 
@@ -67,18 +65,14 @@ public class TaskServiceImpl implements TaskService {
 
 
 
-    private static void checkForUpdate(TaskUpdateRequest taskUpdateRequest, Task task) {
+    private void checkForUpdate(TaskUpdateRequest taskUpdateRequest, Task task) {
         if(taskUpdateRequest.getTitle() != null) task.setTitle(taskUpdateRequest.getTitle());
         if(taskUpdateRequest.getDescription() != null) task.setDescription(taskUpdateRequest.getDescription());
         if(taskUpdateRequest.getDueDate() != null) task.setDueDate(taskUpdateRequest.getDueDate());
         if(taskUpdateRequest.getMessage() != null) task.getNotification().setMessage(taskUpdateRequest.getMessage());
-        checkForNotificationTimeUpdate(task);
+        notificationService.updateNotification(map(taskUpdateRequest));
         task.setPriority(taskUpdateRequest.getPriority());
         task.setStatus(taskUpdateRequest.getStatus());
     }
 
-    private static void checkForNotificationTimeUpdate(Task task) {
-        if(task.getDueDate() != task.getNotification().getTime().toLocalDate())
-            task.getNotification().setTime(LocalDateTime.of(task.getDueDate(), task.getNotification().getTime().toLocalTime()));
-    }
 }
