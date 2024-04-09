@@ -4,11 +4,7 @@ import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.models.TaskList;
 import africa.semicolon.toDoApplication.datas.repositories.TaskListRepository;
 import africa.semicolon.toDoApplication.dtos.AddTaskToTaskListRequest;
-import africa.semicolon.toDoApplication.dtos.TaskCreationInTaskListRequest;
-import africa.semicolon.toDoApplication.dtos.TaskSearchInTaskListRequest;
-import africa.semicolon.toDoApplication.dtos.TaskUpdateInTaskListRequest;
 import africa.semicolon.toDoApplication.exception.TaskListNotFoundException;
-import africa.semicolon.toDoApplication.exception.TaskNotFoundException;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static africa.semicolon.toDoApplication.utility.Mapper.checkIfListIsNull;
+import static africa.semicolon.toDoApplication.utility.Utility.checkIfListIsNull;
 
 @Service
 public class TaskListServiceImpl implements TaskListService{
