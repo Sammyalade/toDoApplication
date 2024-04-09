@@ -43,9 +43,9 @@ public class TaskListServiceImpl implements TaskListService{
     @Override
     public void removeTaskFromList(AddTaskToTaskListRequest addTaskToTaskListRequest) {
         TaskList taskList = searchForTaskList(addTaskToTaskListRequest.getTaskListId());
-        taskList.setTasks((List<Task>) checkIfListIsNull(taskList.getTasks()));
         Task task = taskService.searchForTaskById(addTaskToTaskListRequest.getTaskId());
         taskList.getTasks().remove(task);
+        taskService.deleteTask(task.getId());
         taskListRepository.save(taskList);
     }
 
