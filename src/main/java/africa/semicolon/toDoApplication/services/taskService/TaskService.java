@@ -12,9 +12,7 @@ import java.util.Optional;
 public interface TaskService {
 
     Task createTask(TaskCreationRequest taskCreationRequest);
-    void updateTaskStatus(TaskUpdateRequest taskUpdateRequest);
+    void updateTask(TaskUpdateRequest taskUpdateRequest);
     void deleteTask(TaskDeleteRequest taskDeleteRequest);
-    void updateTaskDueDate(TaskUpdateRequest taskUpdateRequest);
-    void updateTaskNotificationTime(TaskNotificationTimeChangeRequest taskNotificationTimeChangeRequest);
     Task searchForTaskById(int id);
 }
