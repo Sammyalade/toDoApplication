@@ -1,6 +1,7 @@
 package africa.semicolon.toDoApplication.services.taskService;
 
 import africa.semicolon.toDoApplication.datas.models.Notification;
+import africa.semicolon.toDoApplication.datas.models.Priority;
 import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.repositories.TaskRepository;
 import africa.semicolon.toDoApplication.dtos.TaskCreationRequest;
@@ -40,9 +41,10 @@ public class TaskServiceImpl implements TaskService {
 
 
     @Override
-    public void updateTaskStatus(TaskUpdateRequest taskUpdateRequest) {
+    public void updateTask(TaskUpdateRequest taskUpdateRequest) {
         Task task = searchForTaskById(taskUpdateRequest.getId());
-        task.setStatus(taskUpdateRequest.getStatus());
+        checkForUpdate(taskUpdateRequest, task);
+        notificationService.save(task.getNotification());
         taskRepository.save(task);
     }
 
@@ -55,31 +57,31 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void updateTaskDueDate(TaskUpdateRequest taskUpdateRequest) {
-        updateTaskNotificationTime(map(taskUpdateRequest.getId(), taskUpdateRequest.getDueDate()));
-        Task task = searchForTaskById(taskUpdateRequest.getId());
-        task.setDueDate(taskUpdateRequest.getDueDate());
-        taskRepository.save(task);
-    }
-
-    @Override
-    public void updateTaskNotificationTime(TaskNotificationTimeChangeRequest taskNotificationTimeChangeRequest) {
-        Task task = searchForTaskById(taskNotificationTimeChangeRequest.getId());
-        LocalDateTime dateTime = task.getNotification().getTime();
-        LocalTime time = dateTime.toLocalTime();
-        dateTime = LocalDateTime.of(taskNotificationTimeChangeRequest.getTime(), time);
-        task.getNotification().setTime(dateTime);
-        notificationService.save(task.getNotification());
-        taskRepository.save(task);
-
-    }
-
-    @Override
     public Task searchForTaskById(int id) {
         Optional<Task> optionalTask = taskRepository.findById(id);
         if(optionalTask.isPresent()) {
             return optionalTask.get();
         }
         throw new TaskNotFoundException("Task not found");
+    }
+
+
+
+
+
+
+    private static void checkForUpdate(TaskUpdateRequest taskUpdateRequest, Task task) {
+        if(taskUpdateRequest.getTitle() != null) task.setTitle(taskUpdateRequest.getTitle());
+        if(taskUpdateRequest.getDescription() != null) task.setDescription(taskUpdateRequest.getDescription());
+        if(taskUpdateRequest.getDueDate() != null) task.setDueDate(taskUpdateRequest.getDueDate());
+        if(taskUpdateRequest.getMessage() != null) task.getNotification().setMessage(taskUpdateRequest.getMessage());
+        checkForNotificationTimeUpdate(task);
+        task.setPriority(taskUpdateRequest.getPriority());
+        task.setStatus(taskUpdateRequest.getStatus());
+    }
+
+    private static void checkForNotificationTimeUpdate(Task task) {
+        if(task.getDueDate() != task.getNotification().getTime().toLocalDate())
+            task.getNotification().setTime(LocalDateTime.of(task.getDueDate(), task.getNotification().getTime().toLocalTime()));
     }
 }
