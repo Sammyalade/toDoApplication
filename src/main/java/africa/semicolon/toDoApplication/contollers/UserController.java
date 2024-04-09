@@ -1,6 +1,6 @@
 package africa.semicolon.toDoApplication.contollers;
 
-import africa.semicolon.toDoApplication.dtos.UserRegistrationRequest;
+import africa.semicolon.toDoApplication.dtos.request.UserRegistrationRequest;
 import africa.semicolon.toDoApplication.dtos.response.UserApiResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
 import africa.semicolon.toDoApplication.exception.TodoApplicationException;
