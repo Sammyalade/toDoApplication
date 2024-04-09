@@ -3,7 +3,7 @@ package africa.semicolon.toDoApplication.services.taskList;
 import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.models.TaskList;
 import africa.semicolon.toDoApplication.datas.repositories.TaskListRepository;
-import africa.semicolon.toDoApplication.dtos.AddTaskToTaskListRequest;
+import africa.semicolon.toDoApplication.dtos.request.AddTaskToTaskListRequest;
 import africa.semicolon.toDoApplication.exception.TaskListNotFoundException;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
