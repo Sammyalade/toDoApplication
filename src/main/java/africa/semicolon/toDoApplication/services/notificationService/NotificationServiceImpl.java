@@ -34,12 +34,10 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(notification);
     }
 
-    private static void checkForDateTimeUpdate(NotificationUpdateRequest notificationUpdateRequest, Notification notification) {
-        if(notificationUpdateRequest.getTime() != null && notificationUpdateRequest.getDate() != null)
-            notification.setTime(LocalDateTime.of(notificationUpdateRequest.getDate(), notificationUpdateRequest.getTime()));
-        else if (notificationUpdateRequest.getDate() == null && notificationUpdateRequest.getTime() != null)
+    private void checkForDateTimeUpdate(NotificationUpdateRequest notificationUpdateRequest, Notification notification) {
+        if (notificationUpdateRequest.getTime() != null)
             notification.setTime(LocalDateTime.of(notification.getTime().toLocalDate(), notificationUpdateRequest.getTime()));
-        else if (notificationUpdateRequest.getDate() != null)
+        if (notificationUpdateRequest.getDate() != null)
             notification.setTime(LocalDateTime.of(notificationUpdateRequest.getDate(), notification.getTime().toLocalTime()));
     }
 
