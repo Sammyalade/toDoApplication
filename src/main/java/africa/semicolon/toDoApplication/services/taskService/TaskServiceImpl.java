@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static africa.semicolon.toDoApplication.utility.Mapper.map;
-import static africa.semicolon.toDoApplication.utility.Utility.IsEmptyString;
+import static africa.semicolon.toDoApplication.utility.Utility.IsEmptyOrNullString;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -27,7 +27,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task createTask(TaskCreationRequest taskCreationRequest) {
-        if(IsEmptyString(taskCreationRequest.getTitle())) throw new EmptyStringException("Title cannot be empty");
+        if(IsEmptyOrNullString(taskCreationRequest.getTitle())) throw new EmptyStringException("Title cannot be empty");
         Task task = map(taskCreationRequest);
         Notification notification = task.getNotification();
         notificationService.save(notification);
