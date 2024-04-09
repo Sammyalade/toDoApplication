@@ -1,12 +1,10 @@
 package africa.semicolon.toDoApplication.services.taskService;
 
 import africa.semicolon.toDoApplication.datas.models.Notification;
-import africa.semicolon.toDoApplication.datas.models.Priority;
 import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.repositories.TaskRepository;
 import africa.semicolon.toDoApplication.dtos.TaskCreationRequest;
 import africa.semicolon.toDoApplication.dtos.TaskDeleteRequest;
-import africa.semicolon.toDoApplication.dtos.TaskNotificationTimeChangeRequest;
 import africa.semicolon.toDoApplication.dtos.TaskUpdateRequest;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
 import africa.semicolon.toDoApplication.exception.TaskNotFoundException;
@@ -15,11 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Optional;
 
-import static africa.semicolon.toDoApplication.utility.Mapper.IsEmptyString;
 import static africa.semicolon.toDoApplication.utility.Mapper.map;
+import static africa.semicolon.toDoApplication.utility.Utility.IsEmptyString;
 
 @Service
 public class TaskServiceImpl implements TaskService {
