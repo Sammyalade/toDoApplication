@@ -1,10 +1,10 @@
 package africa.semicolon.toDoApplication.utility;
 
 import africa.semicolon.toDoApplication.datas.models.*;
-import africa.semicolon.toDoApplication.dtos.NotificationUpdateRequest;
-import africa.semicolon.toDoApplication.dtos.TaskCreationRequest;
-import africa.semicolon.toDoApplication.dtos.TaskUpdateRequest;
-import africa.semicolon.toDoApplication.dtos.UserRegistrationRequest;
+import africa.semicolon.toDoApplication.dtos.request.NotificationUpdateRequest;
+import africa.semicolon.toDoApplication.dtos.request.TaskCreationRequest;
+import africa.semicolon.toDoApplication.dtos.request.TaskUpdateRequest;
+import africa.semicolon.toDoApplication.dtos.request.UserRegistrationRequest;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
 
 import static africa.semicolon.toDoApplication.utility.Utility.mergeDateAndTime;
