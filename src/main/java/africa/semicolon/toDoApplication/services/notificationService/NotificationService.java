@@ -1,7 +1,7 @@
 package africa.semicolon.toDoApplication.services.notificationService;
 
 import africa.semicolon.toDoApplication.datas.models.Notification;
-import africa.semicolon.toDoApplication.dtos.NotificationUpdateRequest;
+import africa.semicolon.toDoApplication.dtos.request.NotificationUpdateRequest;
 
 public interface NotificationService {
 
