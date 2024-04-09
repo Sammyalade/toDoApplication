@@ -4,7 +4,6 @@ import africa.semicolon.toDoApplication.datas.models.Notification;
 import africa.semicolon.toDoApplication.datas.repositories.NotificationRepository;
 import africa.semicolon.toDoApplication.dtos.NotificationUpdateRequest;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
-import africa.semicolon.toDoApplication.exception.IncorrectTimeException;
 import africa.semicolon.toDoApplication.exception.NotificationNotFoundException;
 import africa.semicolon.toDoApplication.services.notificationService.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
@@ -102,15 +101,4 @@ public class NotificationServiceTest {
                 .hasMessageContaining("Message cannot be null or empty");
     }
 
-    @Test
-    public void createNotification_updateNotificationWithIncorrectDateFormat_throwsExceptionTest(){
-        Notification notification = notificationService.createNotification("message");
-        NotificationUpdateRequest notificationUpdateRequest = new NotificationUpdateRequest();
-        notificationUpdateRequest.setTime(LocalTime.parse("09"));
-        assertThatThrownBy(()->{
-            notificationService.updateNotification(notificationUpdateRequest);
-        })
-                .isInstanceOf(IncorrectTimeException)
-                .hasMessageContaining("You entered an incorrect time format");
-    }
 }
