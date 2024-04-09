@@ -5,7 +5,6 @@ import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.repositories.NotificationRepository;
 import africa.semicolon.toDoApplication.datas.repositories.TaskRepository;
 import africa.semicolon.toDoApplication.dtos.request.TaskCreationRequest;
-import africa.semicolon.toDoApplication.dtos.request.TaskDeleteRequest;
 import africa.semicolon.toDoApplication.dtos.request.TaskUpdateRequest;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
 import africa.semicolon.toDoApplication.exception.TaskNotFoundException;
@@ -130,9 +129,7 @@ public class TaskServiceTest {
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
         taskCreationRequest.setNotification(notificationService.createNotification("Message"));
         Task task = taskService.createTask(taskCreationRequest);
-        TaskDeleteRequest taskDeleteRequest = new TaskDeleteRequest();
-        taskDeleteRequest.setId(task.getId());
-        taskService.deleteTask(taskDeleteRequest);
+        taskService.deleteTask(task.getId());
         assertThat(taskRepository.count(), is(0L));
         assertThat(notificationRepository.count(), is(0L));
     }
@@ -144,5 +141,41 @@ public class TaskServiceTest {
         })
                 .isInstanceOf(TaskNotFoundException.class)
                 .hasMessageContaining("Task not found");
+    }
+
+    @Test
+    public void deleteTaskThatDoesNotExist_throwsExceptionTest(){
+        assertThatThrownBy(() -> {
+            taskService.deleteTask(11);
+        })
+                .isInstanceOf(TaskNotFoundException.class)
+                .hasMessageContaining("Task not found");
+    }
+
+    @Test
+    public void createTask_searchTaskById_taskIsReturnedTest(){
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest();
+        taskCreationRequest.setTitle("Title");
+        taskCreationRequest.setDescription("Description");
+        taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
+        taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
+        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        Task task = taskService.createTask(taskCreationRequest);
+        assertThat(task, is(taskService.searchForTaskById(task.getId())));
+    }
+
+    @Test
+    public void createTaskWithNull_throwsExceptionTest(){
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest();
+        taskCreationRequest.setTitle(null);
+        taskCreationRequest.setDescription("Description");
+        taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
+        taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
+        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        assertThatThrownBy(() -> {
+            taskService.createTask(taskCreationRequest);
+        })
+                .isInstanceOf(EmptyStringException.class)
+                .hasMessageContaining("Title cannot be null or empty");
     }
 }
