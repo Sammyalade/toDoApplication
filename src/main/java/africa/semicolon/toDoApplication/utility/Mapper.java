@@ -1,10 +1,7 @@
 package africa.semicolon.toDoApplication.utility;
 
 import africa.semicolon.toDoApplication.datas.models.*;
-import africa.semicolon.toDoApplication.dtos.request.NotificationUpdateRequest;
-import africa.semicolon.toDoApplication.dtos.request.TaskCreationRequest;
-import africa.semicolon.toDoApplication.dtos.request.TaskUpdateRequest;
-import africa.semicolon.toDoApplication.dtos.request.UserRegistrationRequest;
+import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
 
 import static africa.semicolon.toDoApplication.utility.Utility.mergeDateAndTime;
@@ -54,4 +51,5 @@ public class Mapper {
         response.setEmail(user.getEmail());
         return response;
     }
+
 }
