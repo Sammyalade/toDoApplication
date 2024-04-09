@@ -1,6 +1,6 @@
 package africa.semicolon.toDoApplication.utility;
 
-import africa.semicolon.toDoApplication.dtos.TaskNotificationTimeChangeRequest;
+import africa.semicolon.toDoApplication.dtos.request.TaskNotificationTimeChangeRequest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
