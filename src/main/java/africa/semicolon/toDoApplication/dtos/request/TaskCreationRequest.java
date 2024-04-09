@@ -1,7 +1,6 @@
-package africa.semicolon.toDoApplication.dtos;
+package africa.semicolon.toDoApplication.dtos.request;
 
 import africa.semicolon.toDoApplication.datas.models.Notification;
-import africa.semicolon.toDoApplication.datas.models.Status;
 import lombok.Data;
 
 import java.time.LocalDate;
