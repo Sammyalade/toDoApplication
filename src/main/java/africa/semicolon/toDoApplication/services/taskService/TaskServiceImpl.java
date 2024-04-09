@@ -4,7 +4,6 @@ import africa.semicolon.toDoApplication.datas.models.Notification;
 import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.repositories.TaskRepository;
 import africa.semicolon.toDoApplication.dtos.request.TaskCreationRequest;
-import africa.semicolon.toDoApplication.dtos.request.TaskDeleteRequest;
 import africa.semicolon.toDoApplication.dtos.request.TaskUpdateRequest;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
 import africa.semicolon.toDoApplication.exception.TaskNotFoundException;
@@ -26,7 +25,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task createTask(TaskCreationRequest taskCreationRequest) {
-        if(IsEmptyOrNullString(taskCreationRequest.getTitle())) throw new EmptyStringException("Title cannot be empty");
+        if(IsEmptyOrNullString(taskCreationRequest.getTitle())) throw new EmptyStringException("Title cannot be null or empty");
         Task task = map(taskCreationRequest);
         Notification notification = task.getNotification();
         notificationService.save(notification);
@@ -44,8 +43,8 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTask(TaskDeleteRequest taskDeleteRequest) {
-        Task task = searchForTaskById(taskDeleteRequest.getId());
+    public void deleteTask(int id) {
+        Task task = searchForTaskById(id);
         Notification notification = task.getNotification();
         taskRepository.delete(task);
         notificationService.delete(notification);
@@ -59,6 +58,7 @@ public class TaskServiceImpl implements TaskService {
         }
         throw new TaskNotFoundException("Task not found");
     }
+
 
 
 
