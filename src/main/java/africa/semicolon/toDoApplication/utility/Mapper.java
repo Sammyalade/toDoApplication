@@ -12,6 +12,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static africa.semicolon.toDoApplication.utility.Utility.mergeDateAndTime;
+
 public class Mapper {
 
     public static Task map(TaskCreationRequest taskCreationRequest) {
@@ -29,26 +31,7 @@ public class Mapper {
         return task;
     }
 
-    private static LocalDateTime mergeDateAndTime(LocalDate date, LocalTime time) {
-        return LocalDateTime.of(date, time);
-    }
 
-    public static boolean IsEmptyString(String title) {
-        return title.isEmpty();
-    }
-
-    public static TaskNotificationTimeChangeRequest map(int id, LocalDate date){
-        TaskNotificationTimeChangeRequest taskNotificationTimeChangeRequest = new TaskNotificationTimeChangeRequest();
-        taskNotificationTimeChangeRequest.setId(id);
-        taskNotificationTimeChangeRequest.setTime(date);
-        return taskNotificationTimeChangeRequest;
-    }
-
-    public static List<?> checkIfListIsNull(List<?> lists) {
-        if(lists == null) lists = new ArrayList<>();
-
-        return lists;
-    }
 
     public static User map(UserRegistrationRequest userRegistrationRequest){
         User user = new User();
