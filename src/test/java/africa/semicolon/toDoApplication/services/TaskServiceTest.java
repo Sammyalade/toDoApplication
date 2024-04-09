@@ -2,14 +2,12 @@ package africa.semicolon.toDoApplication.services;
 
 import africa.semicolon.toDoApplication.datas.models.Status;
 import africa.semicolon.toDoApplication.datas.models.Task;
-import africa.semicolon.toDoApplication.datas.models.TaskList;
 import africa.semicolon.toDoApplication.datas.repositories.NotificationRepository;
 import africa.semicolon.toDoApplication.datas.repositories.TaskRepository;
 import africa.semicolon.toDoApplication.dtos.TaskCreationRequest;
 import africa.semicolon.toDoApplication.dtos.TaskDeleteRequest;
 import africa.semicolon.toDoApplication.dtos.TaskUpdateRequest;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
-import africa.semicolon.toDoApplication.exception.TaskListNotFoundException;
 import africa.semicolon.toDoApplication.exception.TaskNotFoundException;
 import africa.semicolon.toDoApplication.services.notificationService.NotificationService;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
@@ -21,7 +19,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -81,6 +78,7 @@ public class TaskServiceTest {
         Task task = taskService.createTask(taskCreationRequest);
         TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest();
         taskUpdateRequest.setId(task.getId());
+        taskUpdateRequest.setNotificationId(task.getNotification().getId());
         taskUpdateRequest.setStatus(Status.COMPLETED);
         taskService.updateTask(taskUpdateRequest);
         Task updatedTask = taskService.searchForTaskById(task.getId());
@@ -98,6 +96,7 @@ public class TaskServiceTest {
         Task task = taskService.createTask(taskCreationRequest);
         TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest();
         taskUpdateRequest.setId(task.getId());
+        taskUpdateRequest.setNotificationId(task.getNotification().getId());
         taskUpdateRequest.setDueDate(LocalDate.parse("2024-12-29"));
         taskService.updateTask(taskUpdateRequest);
         Task updatedTask = taskService.searchForTaskById(task.getId());
@@ -115,6 +114,7 @@ public class TaskServiceTest {
         Task task = taskService.createTask(taskCreationRequest);
         TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest();
         taskUpdateRequest.setId(task.getId());
+        taskUpdateRequest.setNotificationId(task.getNotification().getId());
         taskUpdateRequest.setDueDate(LocalDate.parse("2024-12-29"));
         taskService.updateTask(taskUpdateRequest);
         Task updatedTask = taskService.searchForTaskById(task.getId());
