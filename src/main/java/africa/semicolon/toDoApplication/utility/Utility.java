@@ -14,8 +14,8 @@ public class Utility {
         return LocalDateTime.of(date, time);
     }
 
-    public static boolean IsEmptyString(String title) {
-        return title.isEmpty();
+    public static boolean IsEmptyOrNullString(String title) {
+        return title == null || title.isEmpty();
     }
 
     public static TaskNotificationTimeChangeRequest map(int id, LocalDate date){
