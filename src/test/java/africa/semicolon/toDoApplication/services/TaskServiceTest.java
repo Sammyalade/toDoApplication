@@ -82,7 +82,7 @@ public class TaskServiceTest {
         TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest();
         taskUpdateRequest.setId(task.getId());
         taskUpdateRequest.setStatus(Status.COMPLETED);
-        taskService.updateTaskStatus(taskUpdateRequest);
+        taskService.updateTask(taskUpdateRequest);
         Task updatedTask = taskService.searchForTaskById(task.getId());
         assertThat(updatedTask.getStatus(), is(Status.COMPLETED));
     }
@@ -99,7 +99,7 @@ public class TaskServiceTest {
         TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest();
         taskUpdateRequest.setId(task.getId());
         taskUpdateRequest.setDueDate(LocalDate.parse("2024-12-29"));
-        taskService.updateTaskDueDate(taskUpdateRequest);
+        taskService.updateTask(taskUpdateRequest);
         Task updatedTask = taskService.searchForTaskById(task.getId());
         assertThat(updatedTask.getDueDate(), is(LocalDate.parse("2024-12-29")));
     }
@@ -116,7 +116,7 @@ public class TaskServiceTest {
         TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest();
         taskUpdateRequest.setId(task.getId());
         taskUpdateRequest.setDueDate(LocalDate.parse("2024-12-29"));
-        taskService.updateTaskDueDate(taskUpdateRequest);
+        taskService.updateTask(taskUpdateRequest);
         Task updatedTask = taskService.searchForTaskById(task.getId());
         assertThat(updatedTask.getNotification().getTime(), is(LocalDateTime.of(LocalDate.parse("2024-12-29"), LocalTime.parse("09:00"))));
     }
