@@ -1,16 +1,11 @@
 package africa.semicolon.toDoApplication.utility;
 
 import africa.semicolon.toDoApplication.datas.models.*;
+import africa.semicolon.toDoApplication.dtos.NotificationUpdateRequest;
 import africa.semicolon.toDoApplication.dtos.TaskCreationRequest;
-import africa.semicolon.toDoApplication.dtos.TaskNotificationTimeChangeRequest;
+import africa.semicolon.toDoApplication.dtos.TaskUpdateRequest;
 import africa.semicolon.toDoApplication.dtos.UserRegistrationRequest;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static africa.semicolon.toDoApplication.utility.Utility.mergeDateAndTime;
 
@@ -29,6 +24,16 @@ public class Mapper {
         task.setDueDate(taskCreationRequest.getDueDate());
 
         return task;
+    }
+
+    public static NotificationUpdateRequest map(TaskUpdateRequest taskUpdateRequest){
+        NotificationUpdateRequest notificationUpdateRequest = new NotificationUpdateRequest();
+        notificationUpdateRequest.setDate(taskUpdateRequest.getDueDate());
+        notificationUpdateRequest.setTime(taskUpdateRequest.getTime());
+        notificationUpdateRequest.setMessage(taskUpdateRequest.getMessage());
+        notificationUpdateRequest.setId(taskUpdateRequest.getNotificationId());
+        notificationUpdateRequest.setRead(taskUpdateRequest.isRead());
+        return notificationUpdateRequest;
     }
 
 
