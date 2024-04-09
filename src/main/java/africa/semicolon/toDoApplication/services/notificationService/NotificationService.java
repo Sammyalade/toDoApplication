@@ -1,17 +1,13 @@
 package africa.semicolon.toDoApplication.services.notificationService;
 
 import africa.semicolon.toDoApplication.datas.models.Notification;
-import africa.semicolon.toDoApplication.dtos.NotificationTimeChangeRequest;
-
-import java.time.LocalDateTime;
-import java.util.Optional;
+import africa.semicolon.toDoApplication.dtos.NotificationUpdateRequest;
 
 public interface NotificationService {
 
     Notification createNotification(String message);
 
-    void markNotificationAsRead(int id);
-    void changeTime(NotificationTimeChangeRequest notificationTimeChangeRequest);
+    void updateNotification(NotificationUpdateRequest notificationUpdateRequest);
 
     void save(Notification notification);
 
