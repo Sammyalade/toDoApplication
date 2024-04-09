@@ -7,10 +7,12 @@ import africa.semicolon.toDoApplication.datas.repositories.TaskRepository;
 import africa.semicolon.toDoApplication.dtos.request.AddTaskToTaskListRequest;
 import africa.semicolon.toDoApplication.dtos.request.TaskCreationRequest;
 import africa.semicolon.toDoApplication.exception.TaskListNotFoundException;
+import africa.semicolon.toDoApplication.exception.TaskNotFoundException;
 import africa.semicolon.toDoApplication.services.notificationService.NotificationService;
 import africa.semicolon.toDoApplication.services.taskList.TaskListService;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +25,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 @SpringBootTest
+@Transactional
 public class TaskListServiceTest {
 
     @Autowired
@@ -36,13 +39,18 @@ public class TaskListServiceTest {
     @Autowired
     private TaskService taskService;
 
+    @BeforeEach
+    public void setUp() {
+        taskListRepository.deleteAll();
+    }
+
     @Test
     public void createTaskListTest() {
         taskListService.createTaskList();
         assertThat(taskListRepository.count(), is(1L));
     }
 
-    @Transactional
+
     @Test
     public void createTaskAndAddToTaskListTest() {
         TaskList taskList = taskListService.createTaskList();
@@ -60,7 +68,7 @@ public class TaskListServiceTest {
         assertThat(taskList.getTasks().size(), is(1));
     }
 
-    @Transactional
+
     @Test
     public void createTaskAndRemoveFromTaskListTest() {
         TaskList taskList = taskListService.createTaskList();
@@ -108,6 +116,57 @@ public class TaskListServiceTest {
         })
                 .isInstanceOf(TaskListNotFoundException.class)
                 .hasMessageContaining("TaskList not found");
+    }
+
+    @Test
+    public void addTaskToTaskListThatDoesNotExist(){
+        AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest();
+        taskCreationRequest.setTitle("Title");
+        taskCreationRequest.setDescription("description");
+        taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
+        taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
+        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        Task task = taskService.createTask(taskCreationRequest);
+        addTaskToTaskListRequest.setTaskListId(1);
+        addTaskToTaskListRequest.setTaskId(task.getId());
+        assertThatThrownBy(() -> {
+            taskListService.addTaskToTaskList(addTaskToTaskListRequest);
+        })
+                .isInstanceOf(TaskListNotFoundException.class)
+                .hasMessageContaining("TaskList not found");
+    }
+
+    @Test
+    public void addNonExistingTaskToTaskList_throwsExceptionTest(){
+        TaskList taskList = taskListService.createTaskList();
+        AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
+        addTaskToTaskListRequest.setTaskListId(taskList.getId());
+        addTaskToTaskListRequest.setTaskId(1);
+        assertThatThrownBy(() -> {
+            taskListService.addTaskToTaskList(addTaskToTaskListRequest);
+        })
+                .isInstanceOf(TaskNotFoundException.class)
+                .hasMessageContaining("Task not found");
+    }
+
+
+    @Test
+    public void createTaskAndAddToTaskList_deleteTaskFromTaskList_taskRepositoryIsEmptyTest(){
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest();
+        taskCreationRequest.setTitle("Title");
+        taskCreationRequest.setDescription("description");
+        taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
+        taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
+        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        TaskList taskList = taskListService.createTaskList();
+        Task task = taskService.createTask(taskCreationRequest);
+        AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
+        addTaskToTaskListRequest.setTaskListId(taskList.getId());
+        addTaskToTaskListRequest.setTaskId(task.getId());
+        taskListService.addTaskToTaskList(addTaskToTaskListRequest);
+        taskListService.removeTaskFromList(addTaskToTaskListRequest);
+        assertThat(taskRepository.count(), is(0L));
     }
 
 }
