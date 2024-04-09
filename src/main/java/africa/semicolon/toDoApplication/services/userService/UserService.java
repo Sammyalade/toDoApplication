@@ -1,10 +1,9 @@
 package africa.semicolon.toDoApplication.services.userService;
 
-import africa.semicolon.toDoApplication.datas.models.User;
-import africa.semicolon.toDoApplication.dtos.*;
+import africa.semicolon.toDoApplication.dtos.request.UserLoginRequest;
+import africa.semicolon.toDoApplication.dtos.request.UserRegistrationRequest;
+import africa.semicolon.toDoApplication.dtos.request.UserUpdateRequest;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
-
-import java.util.List;
 
 public interface UserService {
 
