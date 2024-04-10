@@ -13,6 +13,7 @@ public class Mapper {
         task.setTitle(taskCreationRequest.getTitle());
         task.setDescription(taskCreationRequest.getDescription());
         task.setStatus(Status.CREATED);
+
         Notification notification = taskCreationRequest.getNotification();
         notification.setTime(mergeDateAndTime(taskCreationRequest.getDueDate(),
                 taskCreationRequest.getNotificationTime()));
