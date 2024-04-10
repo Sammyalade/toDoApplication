@@ -14,7 +14,7 @@ public class Utility {
         return LocalDateTime.of(date, time);
     }
 
-    public static boolean IsEmptyOrNullString(String title) {
+    public static boolean isEmptyOrNullString(String title) {
         return title == null || title.isEmpty();
     }
 
