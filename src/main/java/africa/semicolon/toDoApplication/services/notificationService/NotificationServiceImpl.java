@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static africa.semicolon.toDoApplication.utility.Utility.IsEmptyOrNullString;
+import static africa.semicolon.toDoApplication.utility.Utility.isEmptyOrNullString;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
@@ -19,7 +19,7 @@ public class NotificationServiceImpl implements NotificationService {
     private NotificationRepository notificationRepository;
     @Override
     public Notification createNotification(String message) {
-        if(IsEmptyOrNullString(message)) throw new EmptyStringException("Message cannot be null or empty");
+        if(isEmptyOrNullString(message)) throw new EmptyStringException("Message cannot be null or empty");
         Notification notification = new Notification();
         notification.setMessage(message);
         notificationRepository.save(notification);
