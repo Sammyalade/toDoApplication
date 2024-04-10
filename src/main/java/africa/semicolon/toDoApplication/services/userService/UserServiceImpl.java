@@ -1,13 +1,13 @@
 package africa.semicolon.toDoApplication.services.userService;
 
+import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.models.User;
 import africa.semicolon.toDoApplication.datas.repositories.UserRepository;
-import africa.semicolon.toDoApplication.dtos.request.UserLoginRequest;
-import africa.semicolon.toDoApplication.dtos.request.UserRegistrationRequest;
-import africa.semicolon.toDoApplication.dtos.request.UserTaskCreationRequest;
-import africa.semicolon.toDoApplication.dtos.request.UserUpdateRequest;
+import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
+import africa.semicolon.toDoApplication.services.taskList.TaskListService;
+import africa.semicolon.toDoApplication.services.taskService.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,16 +20,34 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private TaskListService taskListService;
+    @Autowired
+    private TaskService taskService;
 
     public UserRegistrationResponse registerUser(UserRegistrationRequest userRegistrationRequest) {
         User user = map(userRegistrationRequest);
+        taskListService.save(user.getTaskList());
         userRepository.save(user);
         return map(user);
     }
 
     @Override
     public TaskCreationResponse createTask(UserTaskCreationRequest userTaskCreationRequest) {
-        return null;
+        User user = searchUserById(userTaskCreationRequest.getUserId());
+        TaskCreationRequest taskCreationRequest = map(userTaskCreationRequest);
+        Task task = taskService.createTask(taskCreationRequest);
+        taskListService.addTaskToTaskList(map(user.getTaskList().getId(), task.getId()));
+        TaskCreationResponse taskCreationResponse = new TaskCreationResponse();
+
+    }
+
+
+
+    @Override
+    public User searchUserById(int userId) {
+        Optional<User> user = userRepository.findById(userId);
+        return user.get();
     }
 
     @Override
