@@ -8,4 +8,8 @@ public interface TaskListService {
     TaskList createTaskList();
     void addTaskToTaskList(AddTaskToTaskListRequest addTaskToTaskListRequest);
     void removeTaskFromList(AddTaskToTaskListRequest addTaskToTaskListRequest);
+
+    TaskList searchForTaskList(long taskListId);
+
+    void save(TaskList taskList);
 }
