@@ -58,32 +58,23 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void loginUser(UserLoginRequest userLoginRequest) {
-        Optional<User> user = userRepository.findById(userLoginRequest.getId());
-        if (user.isPresent()) {
-            User user1 = user.get();
-            if(user1.getEmail().equals(userLoginRequest.getEmail())){
-                user1.setLocked(false);
-            }
-        }
+        User user = searchUserById(userLoginRequest.getId());
+            if(user.getEmail().equals(userLoginRequest.getEmail())) user.setLocked(false);
 
     }
 
     @Override
     public void logoutUser(int id) {
-        Optional<User> user = userRepository.findById(id);
-        if (user.isPresent()) {
-            User user1 = user.get();
-            user1.setLocked(true);
-        }
+        User user = searchUserById(id);
+        user.setLocked(true);
     }
 
     @Override
     public void updateUser(UserUpdateRequest userUpdateRequest) {
-        Optional<User> user = userRepository.findById(userUpdateRequest.getId());
-        if (user.isPresent()) {
-            User user1 = user.get();
-            user1.setEmail(userUpdateRequest.getEmail());
-        }
+        User user = searchUserById(userUpdateRequest.getId());
+        if(userUpdateRequest.getUsername() != null) user.setUsername(userUpdateRequest.getUsername());
+        if(userUpdateRequest.getEmail() != null) user.setEmail(userUpdateRequest.getEmail());
+        userRepository.save(user);
     }
 
     @Override
