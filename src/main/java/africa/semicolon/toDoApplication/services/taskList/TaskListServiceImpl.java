@@ -49,7 +49,8 @@ public class TaskListServiceImpl implements TaskListService{
         taskListRepository.save(taskList);
     }
 
-    private TaskList searchForTaskList(long taskListId) {
+    @Override
+    public TaskList searchForTaskList(long taskListId) {
         Optional<TaskList> optionalTaskList = taskListRepository.findById(taskListId);
         if(optionalTaskList.isPresent()) {
             return optionalTaskList.get();
@@ -57,6 +58,10 @@ public class TaskListServiceImpl implements TaskListService{
         throw new TaskListNotFoundException("TaskList not found");
     }
 
+    @Override
+    public void save(TaskList taskList) {
+        taskListRepository.save(taskList);
+    }
 
 
 }
