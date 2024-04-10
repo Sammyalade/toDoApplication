@@ -13,6 +13,5 @@ public class UserTaskCreationRequest {
     private LocalDate dueDate;
     private String notificationMessage;
     private LocalTime notificationTime;
-    private int taskListId;
     private int userId;
 }
