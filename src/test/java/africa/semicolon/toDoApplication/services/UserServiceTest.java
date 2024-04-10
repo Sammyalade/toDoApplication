@@ -5,9 +5,7 @@ import africa.semicolon.toDoApplication.datas.models.Status;
 import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.models.TaskList;
 import africa.semicolon.toDoApplication.datas.repositories.UserRepository;
-import africa.semicolon.toDoApplication.dtos.request.UserRegistrationRequest;
-import africa.semicolon.toDoApplication.dtos.request.UserTaskCreationRequest;
-import africa.semicolon.toDoApplication.dtos.request.UserTaskUpdateRequest;
+import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
@@ -133,5 +131,62 @@ public class UserServiceTest {
         })
                 .isInstanceOf(UserNotFoundException.class)
                 .hasMessageContaining("User not found");
+    }
+
+    @Test
+    public void registerUser_loginUser_userIsLoggedInTest(){
+        UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
+        userRegistrationRequest.setUsername("username");
+        userRegistrationRequest.setEmail("email@email.com");
+        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserLoginRequest userLoginRequest = new UserLoginRequest();
+        userLoginRequest.setId(user.getUserId());
+        userLoginRequest.setEmail(user.getEmail());
+        userService.loginUser(userLoginRequest);
+        assertThat(userService.searchUserById(user.getUserId()).isLocked(), is(false));
+    }
+
+    @Test
+    public void registerUser_loginUser_logoutUser_userIsLoggedOutTest(){
+        UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
+        userRegistrationRequest.setUsername("username");
+        userRegistrationRequest.setEmail("email@email.com");
+        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserLoginRequest userLoginRequest = new UserLoginRequest();
+        userLoginRequest.setId(user.getUserId());
+        userLoginRequest.setEmail(user.getEmail());
+        userService.loginUser(userLoginRequest);
+        userService.logoutUser(user.getUserId());
+        assertThat(userService.searchUserById(user.getUserId()).isLocked(), is(true));
+    }
+
+    @Test
+    public void registerUser_loginUser_logoutUser_loginUser_userIsLoggedInTest(){
+        UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
+        userRegistrationRequest.setUsername("username");
+        userRegistrationRequest.setEmail("email@email.com");
+        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserLoginRequest userLoginRequest = new UserLoginRequest();
+        userLoginRequest.setId(user.getUserId());
+        userLoginRequest.setEmail(user.getEmail());
+        userService.loginUser(userLoginRequest);
+        userService.logoutUser(user.getUserId());
+        userService.loginUser(userLoginRequest);
+        assertThat(userService.searchUserById(user.getUserId()).isLocked(), is(false));
+    }
+
+    @Test
+    public void createUser_updateUser_userIsUpdatedTest(){
+        UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
+        userRegistrationRequest.setUsername("username");
+        userRegistrationRequest.setEmail("email@email.com");
+        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
+        userUpdateRequest.setId(user.getUserId());
+        userUpdateRequest.setEmail("myEmail@email.com");
+        userUpdateRequest.setUsername("NewUsername");
+        userService.updateUser(userUpdateRequest);
+        assertThat(userService.searchUserById(user.getUserId()).getEmail(), is("myEmail@email.com"));
+        assertThat(userService.searchUserById(user.getUserId()).getUsername(), is("NewUsername"));
     }
 }
