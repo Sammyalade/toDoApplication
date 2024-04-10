@@ -50,7 +50,25 @@ public class Mapper {
         response.setUserId(user.getId());
         response.setUsername(user.getUsername());
         response.setEmail(user.getEmail());
+        response.setTaskListId(user.getTaskList().getId());
         return response;
+    }
+
+    public static TaskCreationRequest map(UserTaskCreationRequest userTaskCreationRequest) {
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest();
+        taskCreationRequest.setTitle(userTaskCreationRequest.getTitle());
+        taskCreationRequest.setDescription(userTaskCreationRequest.getDescription());
+        taskCreationRequest.setDueDate(userTaskCreationRequest.getDueDate());
+        taskCreationRequest.setNotificationTime(userTaskCreationRequest.getNotificationTime());
+        taskCreationRequest.setNotificationMessage(userTaskCreationRequest.getNotificationMessage());
+        return taskCreationRequest;
+    }
+
+    public static AddTaskToTaskListRequest map(long taskListId, int taskId){
+        AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
+        addTaskToTaskListRequest.setTaskId(taskId);
+        addTaskToTaskListRequest.setTaskListId(taskListId);
+        return addTaskToTaskListRequest;
     }
 
 }
