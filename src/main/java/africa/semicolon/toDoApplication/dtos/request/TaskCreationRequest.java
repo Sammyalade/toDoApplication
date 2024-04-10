@@ -12,6 +12,7 @@ public class TaskCreationRequest {
     private String title;
     private String description;
     private LocalDate dueDate;
+    private String notificationMessage;
     private Notification notification;
     private LocalTime notificationTime;
 }
