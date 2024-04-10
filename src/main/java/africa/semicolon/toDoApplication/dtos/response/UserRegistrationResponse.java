@@ -6,6 +6,7 @@ import lombok.Data;
 public class UserRegistrationResponse {
 
     private int userId;
+    private int taskListId;
     private String username;
     private String email;
 
