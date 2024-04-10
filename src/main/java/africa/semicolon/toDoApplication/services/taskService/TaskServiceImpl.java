@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 import static africa.semicolon.toDoApplication.utility.Mapper.map;
-import static africa.semicolon.toDoApplication.utility.Utility.IsEmptyOrNullString;
+import static africa.semicolon.toDoApplication.utility.Utility.isEmptyOrNullString;
 
 @Service
 public class TaskServiceImpl implements TaskService {
@@ -25,7 +25,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task createTask(TaskCreationRequest taskCreationRequest) {
-        if(IsEmptyOrNullString(taskCreationRequest.getTitle())) throw new EmptyStringException("Title cannot be null or empty");
+        if(isEmptyOrNullString(taskCreationRequest.getTitle())) throw new EmptyStringException("Title cannot be null or empty");
         Notification notification = notificationService.createNotification(taskCreationRequest.getNotificationMessage());
         taskCreationRequest.setNotification(notification);
         Task task = map(taskCreationRequest);
