@@ -2,6 +2,7 @@ package africa.semicolon.toDoApplication.utility;
 
 import africa.semicolon.toDoApplication.datas.models.*;
 import africa.semicolon.toDoApplication.dtos.request.*;
+import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
 
 import static africa.semicolon.toDoApplication.utility.Utility.mergeDateAndTime;
@@ -69,6 +70,29 @@ public class Mapper {
         addTaskToTaskListRequest.setTaskId(taskId);
         addTaskToTaskListRequest.setTaskListId(taskListId);
         return addTaskToTaskListRequest;
+    }
+
+    public static TaskCreationResponse map(int id, String taskTitle, int notificationId){
+        TaskCreationResponse taskCreationResponse = new TaskCreationResponse();
+        taskCreationResponse.setTaskId(id);
+        taskCreationResponse.setTaskTitle(taskTitle);
+        taskCreationResponse.setNotificationId(notificationId);
+        return taskCreationResponse;
+    }
+
+    public static TaskUpdateRequest map(UserTaskUpdateRequest userTaskUpdateRequest) {
+        TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest();
+        taskUpdateRequest.setId(userTaskUpdateRequest.getTaskId());
+        taskUpdateRequest.setTitle(userTaskUpdateRequest.getTitle());
+        taskUpdateRequest.setDescription(userTaskUpdateRequest.getDescription());
+        taskUpdateRequest.setStatus(userTaskUpdateRequest.getStatus());
+        taskUpdateRequest.setMessage(userTaskUpdateRequest.getMessage());
+        taskUpdateRequest.setRead(userTaskUpdateRequest.isRead());
+        taskUpdateRequest.setPriority(userTaskUpdateRequest.getPriority());
+        taskUpdateRequest.setDueDate(userTaskUpdateRequest.getDueDate());
+        taskUpdateRequest.setTime(userTaskUpdateRequest.getTime());
+        taskUpdateRequest.setNotificationId(userTaskUpdateRequest.getNotificationId());
+        return taskUpdateRequest;
     }
 
 }
