@@ -6,6 +6,8 @@ import africa.semicolon.toDoApplication.datas.repositories.UserRepository;
 import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
+import africa.semicolon.toDoApplication.exception.EmptyStringException;
+import africa.semicolon.toDoApplication.exception.UserNotFoundException;
 import africa.semicolon.toDoApplication.services.taskList.TaskListService;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 import static africa.semicolon.toDoApplication.utility.Mapper.map;
+import static africa.semicolon.toDoApplication.utility.Utility.isEmptyOrNullString;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -26,6 +29,7 @@ public class UserServiceImpl implements UserService {
     private TaskService taskService;
 
     public UserRegistrationResponse registerUser(UserRegistrationRequest userRegistrationRequest) {
+        if (isEmptyOrNullString(userRegistrationRequest.getUsername())) throw new EmptyStringException("Username cannot be null or empty");
         User user = map(userRegistrationRequest);
         taskListService.save(user.getTaskList());
         userRepository.save(user);
@@ -38,8 +42,7 @@ public class UserServiceImpl implements UserService {
         TaskCreationRequest taskCreationRequest = map(userTaskCreationRequest);
         Task task = taskService.createTask(taskCreationRequest);
         taskListService.addTaskToTaskList(map(user.getTaskList().getId(), task.getId()));
-        TaskCreationResponse taskCreationResponse = new TaskCreationResponse();
-
+        return map(task.getId(), task.getTitle(), task.getNotification().getId());
     }
 
 
@@ -47,7 +50,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User searchUserById(int userId) {
         Optional<User> user = userRepository.findById(userId);
-        return user.get();
+        if(user.isPresent()){
+            return user.get();
+        }
+        throw new UserNotFoundException("User not found");
     }
 
     @Override
@@ -85,4 +91,12 @@ public class UserServiceImpl implements UserService {
         Optional<User> user = userRepository.findById(id);
         user.ifPresent(value -> userRepository.delete(value));
     }
+
+    @Override
+    public void updateTask(UserTaskUpdateRequest userTaskUpdateRequest) {
+        taskService.updateTask(map(userTaskUpdateRequest));
+        userRepository.save(searchUserById(userTaskUpdateRequest.getUserId()));
+    }
+
+
 }
