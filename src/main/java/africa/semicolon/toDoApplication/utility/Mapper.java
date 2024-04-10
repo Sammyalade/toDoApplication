@@ -49,7 +49,7 @@ public class Mapper {
     public static UserRegistrationResponse map(User user){
         UserRegistrationResponse response = new UserRegistrationResponse();
         response.setUserId(user.getId());
-        response.setUsername(user.getUsername());
+        response.setUsername(user.getUsername().toLowerCase());
         response.setEmail(user.getEmail());
         response.setTaskListId(user.getTaskList().getId());
         return response;
