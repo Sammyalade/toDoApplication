@@ -4,7 +4,9 @@ import africa.semicolon.toDoApplication.datas.models.User;
 import africa.semicolon.toDoApplication.datas.repositories.UserRepository;
 import africa.semicolon.toDoApplication.dtos.request.UserLoginRequest;
 import africa.semicolon.toDoApplication.dtos.request.UserRegistrationRequest;
+import africa.semicolon.toDoApplication.dtos.request.UserTaskCreationRequest;
 import africa.semicolon.toDoApplication.dtos.request.UserUpdateRequest;
+import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,11 @@ public class UserServiceImpl implements UserService {
         User user = map(userRegistrationRequest);
         userRepository.save(user);
         return map(user);
+    }
+
+    @Override
+    public TaskCreationResponse createTask(UserTaskCreationRequest userTaskCreationRequest) {
+        return null;
     }
 
     @Override
