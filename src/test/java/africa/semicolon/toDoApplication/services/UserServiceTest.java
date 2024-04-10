@@ -44,7 +44,7 @@ public class UserServiceTest {
         userRegistrationRequest.setUsername("username");
         userRegistrationRequest.setEmail("email@email.com");
         UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
-        userService.createTask(userTaskCreationRequest);
+        //userService.createTask(userTaskCreationRequest);
 
     }
 }

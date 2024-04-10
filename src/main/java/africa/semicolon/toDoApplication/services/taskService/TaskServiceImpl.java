@@ -26,9 +26,10 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task createTask(TaskCreationRequest taskCreationRequest) {
         if(IsEmptyOrNullString(taskCreationRequest.getTitle())) throw new EmptyStringException("Title cannot be null or empty");
+        Notification notification = notificationService.createNotification(taskCreationRequest.getNotificationMessage());
+        taskCreationRequest.setNotification(notification);
         Task task = map(taskCreationRequest);
-        Notification notification = task.getNotification();
-        notificationService.save(notification);
+        notificationService.save(task.getNotification());
         taskRepository.save(task);
         return task;
     }

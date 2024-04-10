@@ -50,7 +50,7 @@ public class TaskServiceTest {
         taskCreationRequest.setDescription("Description");
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
-        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        taskCreationRequest.setNotificationMessage("Message");
         taskService.createTask(taskCreationRequest);
         assertThat(taskRepository.count(), is(1L));
     }
@@ -62,7 +62,7 @@ public class TaskServiceTest {
         taskCreationRequest.setDescription("Description");
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
-        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        taskCreationRequest.setNotificationMessage("Message");
         assertThrows(EmptyStringException.class, () -> taskService.createTask(taskCreationRequest));
     }
 
@@ -73,7 +73,7 @@ public class TaskServiceTest {
         taskCreationRequest.setDescription("Description");
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
-        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        taskCreationRequest.setNotificationMessage("Message");
         Task task = taskService.createTask(taskCreationRequest);
         TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest();
         taskUpdateRequest.setId(task.getId());
@@ -91,7 +91,7 @@ public class TaskServiceTest {
         taskCreationRequest.setDescription("Description");
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
-        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        taskCreationRequest.setNotificationMessage("Message");
         Task task = taskService.createTask(taskCreationRequest);
         TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest();
         taskUpdateRequest.setId(task.getId());
@@ -109,7 +109,7 @@ public class TaskServiceTest {
         taskCreationRequest.setDescription("Description");
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
-        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        taskCreationRequest.setNotificationMessage("Message");
         Task task = taskService.createTask(taskCreationRequest);
         TaskUpdateRequest taskUpdateRequest = new TaskUpdateRequest();
         taskUpdateRequest.setId(task.getId());
@@ -127,7 +127,7 @@ public class TaskServiceTest {
         taskCreationRequest.setDescription("Description");
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
-        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        taskCreationRequest.setNotificationMessage("Message");
         Task task = taskService.createTask(taskCreationRequest);
         taskService.deleteTask(task.getId());
         assertThat(taskRepository.count(), is(0L));
@@ -159,7 +159,7 @@ public class TaskServiceTest {
         taskCreationRequest.setDescription("Description");
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
-        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        taskCreationRequest.setNotificationMessage("Message");
         Task task = taskService.createTask(taskCreationRequest);
         assertThat(task, is(taskService.searchForTaskById(task.getId())));
     }
@@ -171,7 +171,7 @@ public class TaskServiceTest {
         taskCreationRequest.setDescription("Description");
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
-        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        taskCreationRequest.setNotificationMessage("Message");
         assertThatThrownBy(() -> {
             taskService.createTask(taskCreationRequest);
         })
