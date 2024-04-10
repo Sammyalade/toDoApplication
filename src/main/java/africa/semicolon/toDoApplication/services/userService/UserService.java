@@ -9,12 +9,10 @@ public interface UserService {
 
     UserRegistrationResponse registerUser(UserRegistrationRequest userRegistrationRequest);
     TaskCreationResponse createTask(UserTaskCreationRequest userTaskCreationRequest);
-
     User searchUserById(int userId);
-
     void loginUser(UserLoginRequest userLoginRequest);
     void logoutUser(int id);
     void updateUser(UserUpdateRequest userUpdateRequest);
-
     void deleteUser(int id);
+    void updateTask(UserTaskUpdateRequest taskUpdateRequest);
 }
