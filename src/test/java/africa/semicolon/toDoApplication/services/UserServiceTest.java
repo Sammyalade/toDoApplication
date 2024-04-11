@@ -10,6 +10,7 @@ import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
 import africa.semicolon.toDoApplication.exception.UserNotFoundException;
+import africa.semicolon.toDoApplication.exception.UserNotLoggedInException;
 import africa.semicolon.toDoApplication.services.taskList.TaskListService;
 import africa.semicolon.toDoApplication.services.userService.UserService;
 import jakarta.transaction.Transactional;
@@ -188,5 +189,56 @@ public class UserServiceTest {
         userService.updateUser(userUpdateRequest);
         assertThat(userService.searchUserById(user.getUserId()).getEmail(), is("myEmail@email.com"));
         assertThat(userService.searchUserById(user.getUserId()).getUsername(), is("NewUsername"));
+    }
+
+    @Test
+    public void registerUser_loginUser_logOutUser_updateUser_throwsExceptionTest(){
+        UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
+        userRegistrationRequest.setUsername("username");
+        userRegistrationRequest.setEmail("email@email.com");
+        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserLoginRequest userLoginRequest = new UserLoginRequest();
+        userLoginRequest.setId(user.getUserId());
+        userLoginRequest.setEmail(user.getEmail());
+        userService.loginUser(userLoginRequest);
+        userService.logoutUser(user.getUserId());
+        UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
+        userUpdateRequest.setId(user.getUserId());
+        userUpdateRequest.setEmail("myEmail@email.com");
+        userUpdateRequest.setUsername("NewUsername");
+        assertThatThrownBy(()->{
+            userService.updateUser(userUpdateRequest);
+        })
+                .isInstanceOf(UserNotLoggedInException.class)
+                .hasMessageContaining("User not logged in. Please login and try again");
+    }
+
+    @Test
+    public void registerUser_logoutUser_createTask_throwsExceptionTest(){
+        UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
+        userRegistrationRequest.setUsername("username");
+        userRegistrationRequest.setEmail("email@email.com");
+        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        userService.logoutUser(user.getUserId());
+        UserTaskCreationRequest userTaskCreationRequest = new UserTaskCreationRequest();
+        assertThatThrownBy(()->{
+            userService.createTask(userTaskCreationRequest);
+        })
+                .isInstanceOf(UserNotLoggedInException.class)
+                .hasMessageContaining("User not logged in. Please login and try again");
+    }
+
+    @Test
+    public void registerUser_logoutUser_deleteUser_throwsExceptionTest(){
+        UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
+        userRegistrationRequest.setUsername("username");
+        userRegistrationRequest.setEmail("email@email.com");
+        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        userService.logoutUser(user.getUserId());
+        assertThatThrownBy(()->{
+            userService.deleteUser(user.getUserId());
+        })
+                .isInstanceOf(UserNotLoggedInException.class)
+                .hasMessageContaining("User not logged in. Please login and try again");
     }
 }
