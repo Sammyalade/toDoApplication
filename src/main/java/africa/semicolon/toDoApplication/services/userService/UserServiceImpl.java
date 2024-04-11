@@ -6,6 +6,7 @@ import africa.semicolon.toDoApplication.datas.repositories.UserRepository;
 import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
+import africa.semicolon.toDoApplication.exception.EmailAlreadyRegisteredException;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
 import africa.semicolon.toDoApplication.exception.UserNotFoundException;
 import africa.semicolon.toDoApplication.exception.UserNotLoggedInException;
@@ -31,6 +32,8 @@ public class UserServiceImpl implements UserService {
 
     public UserRegistrationResponse registerUser(UserRegistrationRequest userRegistrationRequest) {
         if (isEmptyOrNullString(userRegistrationRequest.getUsername())) throw new EmptyStringException("Username cannot be null or empty");
+        if(userRepository.findByEmail(userRegistrationRequest.getEmail()) != null)
+            throw new EmailAlreadyRegisteredException("Email already registered. Please login instead");
         User user = map(userRegistrationRequest);
         taskListService.save(user.getTaskList());
         userRepository.save(user);
@@ -80,8 +83,7 @@ public class UserServiceImpl implements UserService {
             if(userUpdateRequest.getUsername() != null) user.setUsername(userUpdateRequest.getUsername());
             if(userUpdateRequest.getEmail() != null) user.setEmail(userUpdateRequest.getEmail());
             userRepository.save(user);
-        }
-        throw new UserNotLoggedInException("User not logged in. Please login and try again");
+        } else throw new UserNotLoggedInException("User not logged in. Please login and try again");
     }
 
     @Override
