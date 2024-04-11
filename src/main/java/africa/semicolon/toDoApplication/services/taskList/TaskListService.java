@@ -1,7 +1,10 @@
 package africa.semicolon.toDoApplication.services.taskList;
 
+import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.models.TaskList;
 import africa.semicolon.toDoApplication.dtos.request.AddTaskToTaskListRequest;
+
+import java.util.List;
 
 public interface TaskListService {
 
@@ -12,4 +15,5 @@ public interface TaskListService {
     TaskList searchForTaskList(long taskListId);
 
     void save(TaskList taskList);
+    List<Task> findAllTask(int taskListId);
 }
