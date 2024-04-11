@@ -15,6 +15,7 @@ import africa.semicolon.toDoApplication.services.taskService.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static africa.semicolon.toDoApplication.utility.Mapper.map;
@@ -102,6 +103,12 @@ public class UserServiceImpl implements UserService {
             userRepository.save(searchUserById(userTaskUpdateRequest.getUserId()));
         }else
             throw new UserNotLoggedInException("User not logged in. Please login and try again");
+    }
+
+    @Override
+    public List<Task> getAllTasks(int userId) {
+        if(!searchUserById(userId).isLocked()) return taskListService.findAllTask(searchUserById(userId).getTaskList().getId());
+        throw new UserNotLoggedInException("User not logged in. Please login and try again");
     }
 
 
