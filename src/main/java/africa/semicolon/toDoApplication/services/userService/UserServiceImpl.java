@@ -6,6 +6,8 @@ import africa.semicolon.toDoApplication.datas.repositories.UserRepository;
 import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
+import africa.semicolon.toDoApplication.dtos.response.UserTaskUpdateResponse;
+import africa.semicolon.toDoApplication.dtos.response.UserUpdateResponse;
 import africa.semicolon.toDoApplication.exception.EmailAlreadyRegisteredException;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
 import africa.semicolon.toDoApplication.exception.UserNotFoundException;
@@ -78,14 +80,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUser(UserUpdateRequest userUpdateRequest) {
+    public UserUpdateResponse updateUser(UserUpdateRequest userUpdateRequest) {
         User user = searchUserById(userUpdateRequest.getId());
         if(!user.isLocked()) {
             if(userUpdateRequest.getUsername() != null) user.setUsername(userUpdateRequest.getUsername());
             if(userUpdateRequest.getEmail() != null) user.setEmail(userUpdateRequest.getEmail());
             userRepository.save(user);
-        } else throw new UserNotLoggedInException("User not logged in. Please login and try again");
+            return map(userUpdateRequest);
+        }
+        throw new UserNotLoggedInException("User not logged in. Please login and try again");
     }
+
+
 
     @Override
     public void deleteUser(int id) {
@@ -97,12 +103,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateTask(UserTaskUpdateRequest userTaskUpdateRequest) {
+    public UserTaskUpdateResponse updateTask(UserTaskUpdateRequest userTaskUpdateRequest) {
         if(!searchUserById(userTaskUpdateRequest.getUserId()).isLocked()) {
-            taskService.updateTask(map(userTaskUpdateRequest));
+            TaskUpdateRequest taskUpdateRequest = map(userTaskUpdateRequest);
+            taskService.updateTask(taskUpdateRequest);
             userRepository.save(searchUserById(userTaskUpdateRequest.getUserId()));
-        }else
-            throw new UserNotLoggedInException("User not logged in. Please login and try again");
+            return map(taskUpdateRequest, userTaskUpdateRequest.getUserId());
+        }
+        throw new UserNotLoggedInException("User not logged in. Please login and try again");
     }
 
     @Override
