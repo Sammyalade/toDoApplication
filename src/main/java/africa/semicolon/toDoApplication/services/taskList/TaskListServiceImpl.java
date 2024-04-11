@@ -63,5 +63,10 @@ public class TaskListServiceImpl implements TaskListService{
         taskListRepository.save(taskList);
     }
 
+    @Override
+    public List<Task> findAllTask(int taskListId) {
+        return searchForTaskList(taskListId).getTasks();
+    }
+
 
 }
