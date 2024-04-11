@@ -13,7 +13,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/toDoApplication")
 public class UserController {
     @Autowired
     private UserService userService;
