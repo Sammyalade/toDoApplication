@@ -4,6 +4,8 @@ import africa.semicolon.toDoApplication.datas.models.*;
 import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
+import africa.semicolon.toDoApplication.dtos.response.UserTaskUpdateResponse;
+import africa.semicolon.toDoApplication.dtos.response.UserUpdateResponse;
 
 import static africa.semicolon.toDoApplication.utility.Utility.mergeDateAndTime;
 
@@ -51,7 +53,6 @@ public class Mapper {
         response.setUserId(user.getId());
         response.setUsername(user.getUsername().toLowerCase());
         response.setEmail(user.getEmail());
-        response.setTaskListId(user.getTaskList().getId());
         return response;
     }
 
@@ -93,6 +94,22 @@ public class Mapper {
         taskUpdateRequest.setTime(userTaskUpdateRequest.getTime());
         taskUpdateRequest.setNotificationId(userTaskUpdateRequest.getNotificationId());
         return taskUpdateRequest;
+    }
+
+    public static UserUpdateResponse map(UserUpdateRequest userUpdateRequest) {
+        UserUpdateResponse userUpdateResponse = new UserUpdateResponse();
+        userUpdateResponse.setEmail(userUpdateRequest.getEmail());
+        userUpdateResponse.setUserId(userUpdateRequest.getId());
+        userUpdateResponse.setUsername(userUpdateRequest.getUsername());
+        return userUpdateResponse;
+    }
+
+    public static UserTaskUpdateResponse map(TaskUpdateRequest taskUpdateRequest, int userId){
+        UserTaskUpdateResponse userTaskUpdateResponse = new UserTaskUpdateResponse();
+        userTaskUpdateResponse.setTaskId(taskUpdateRequest.getId());
+        userTaskUpdateResponse.setTaskTitle(taskUpdateRequest.getTitle());
+        userTaskUpdateResponse.setUserId(userId);
+        return userTaskUpdateResponse;
     }
 
 }
