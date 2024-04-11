@@ -98,8 +98,7 @@ public class UserServiceImpl implements UserService {
        User user = searchUserById(id);
         if(!user.isLocked()) {
             userRepository.delete(user);
-        }
-        throw new UserNotLoggedInException("User not logged in. Please login and try again");
+        } else throw new UserNotLoggedInException("User not logged in. Please login and try again");
     }
 
     @Override
