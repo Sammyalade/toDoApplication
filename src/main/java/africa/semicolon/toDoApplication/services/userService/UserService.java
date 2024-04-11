@@ -1,9 +1,12 @@
 package africa.semicolon.toDoApplication.services.userService;
 
+import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.models.User;
 import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -15,4 +18,5 @@ public interface UserService {
     void updateUser(UserUpdateRequest userUpdateRequest);
     void deleteUser(int id);
     void updateTask(UserTaskUpdateRequest taskUpdateRequest);
+    List<Task> getAllTasks(int userId);
 }
