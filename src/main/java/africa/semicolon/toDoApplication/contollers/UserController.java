@@ -91,7 +91,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/deleteUser/{id}")
+    @GetMapping("/getAllTask/{id}")
     public ResponseEntity<?> getAllTask(@PathVariable("id") int id){
         try{
             List<Task> tasks = userService.getAllTasks(id);
