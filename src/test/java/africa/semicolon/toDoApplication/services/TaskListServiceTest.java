@@ -8,7 +8,6 @@ import africa.semicolon.toDoApplication.dtos.request.AddTaskToTaskListRequest;
 import africa.semicolon.toDoApplication.dtos.request.TaskCreationRequest;
 import africa.semicolon.toDoApplication.exception.TaskListNotFoundException;
 import africa.semicolon.toDoApplication.exception.TaskNotFoundException;
-import africa.semicolon.toDoApplication.services.notificationService.NotificationService;
 import africa.semicolon.toDoApplication.services.taskList.TaskListService;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
 import jakarta.transaction.Transactional;
@@ -19,6 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,8 +32,6 @@ public class TaskListServiceTest {
     private TaskListService taskListService;
     @Autowired
     private TaskListRepository taskListRepository;
-    @Autowired
-    private NotificationService notificationService;
     @Autowired
     private TaskRepository taskRepository;
     @Autowired
@@ -59,7 +57,7 @@ public class TaskListServiceTest {
         taskCreationRequest.setDescription("description");
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
-        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        taskCreationRequest.setNotificationMessage("Message");
         Task task = taskService.createTask(taskCreationRequest);
         AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
         addTaskToTaskListRequest.setTaskListId(taskList.getId());
@@ -77,7 +75,7 @@ public class TaskListServiceTest {
         taskCreationRequest.setDescription("description");
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
-        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        taskCreationRequest.setNotificationMessage("Message");
         Task task = taskService.createTask(taskCreationRequest);
         AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
         addTaskToTaskListRequest.setTaskListId(taskList.getId());
@@ -94,7 +92,7 @@ public class TaskListServiceTest {
         taskCreationRequest.setDescription("description");
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
-        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        taskCreationRequest.setNotificationMessage("Message");
         Task task = taskService.createTask(taskCreationRequest);
         AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
         addTaskToTaskListRequest.setTaskListId(11);
@@ -126,7 +124,7 @@ public class TaskListServiceTest {
         taskCreationRequest.setDescription("description");
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
-        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        taskCreationRequest.setNotificationMessage("Message");
         Task task = taskService.createTask(taskCreationRequest);
         addTaskToTaskListRequest.setTaskListId(1);
         addTaskToTaskListRequest.setTaskId(task.getId());
@@ -150,6 +148,25 @@ public class TaskListServiceTest {
                 .hasMessageContaining("Task not found");
     }
 
+    @Test
+    public void findAllTaskTest(){
+        TaskList taskList = taskListService.createTaskList();
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest();
+        taskCreationRequest.setTitle("Title");
+        taskCreationRequest.setDescription("description");
+        taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
+        taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
+        taskCreationRequest.setNotificationMessage("Message");
+        Task task = taskService.createTask(taskCreationRequest);
+        AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
+        addTaskToTaskListRequest.setTaskListId(taskList.getId());
+        addTaskToTaskListRequest.setTaskId(task.getId());
+        taskListService.addTaskToTaskList(addTaskToTaskListRequest);
+        taskListService.removeTaskFromList(addTaskToTaskListRequest);
+        List<Task> tasks = taskListService.findAllTask(taskList.getId());
+        assertThat(taskListService.findAllTask(taskList.getId()), is(tasks));
+    }
+
 
     @Test
     public void createTaskAndAddToTaskList_deleteTaskFromTaskList_taskRepositoryIsEmptyTest(){
@@ -158,7 +175,7 @@ public class TaskListServiceTest {
         taskCreationRequest.setDescription("description");
         taskCreationRequest.setDueDate(LocalDate.parse("2021-12-31"));
         taskCreationRequest.setNotificationTime(LocalTime.parse("09:00"));
-        taskCreationRequest.setNotification(notificationService.createNotification("Message"));
+        taskCreationRequest.setNotificationMessage("Message");
         TaskList taskList = taskListService.createTaskList();
         Task task = taskService.createTask(taskCreationRequest);
         AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
