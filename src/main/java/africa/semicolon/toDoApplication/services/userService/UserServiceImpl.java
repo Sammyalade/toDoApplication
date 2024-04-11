@@ -8,6 +8,7 @@ import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
 import africa.semicolon.toDoApplication.exception.UserNotFoundException;
+import africa.semicolon.toDoApplication.exception.UserNotLoggedInException;
 import africa.semicolon.toDoApplication.services.taskList.TaskListService;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,10 +40,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public TaskCreationResponse createTask(UserTaskCreationRequest userTaskCreationRequest) {
         User user = searchUserById(userTaskCreationRequest.getUserId());
-        TaskCreationRequest taskCreationRequest = map(userTaskCreationRequest);
-        Task task = taskService.createTask(taskCreationRequest);
-        taskListService.addTaskToTaskList(map(user.getTaskList().getId(), task.getId()));
-        return map(task.getId(), task.getTitle(), task.getNotification().getId());
+        if(!user.isLocked()) {
+            TaskCreationRequest taskCreationRequest = map(userTaskCreationRequest);
+            Task task = taskService.createTask(taskCreationRequest);
+            taskListService.addTaskToTaskList(map(user.getTaskList().getId(), task.getId()));
+            return map(task.getId(), task.getTitle(), task.getNotification().getId());
+        }
+        throw new UserNotLoggedInException("User not logged in. Please login and try again");
     }
 
 
@@ -72,21 +76,30 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(UserUpdateRequest userUpdateRequest) {
         User user = searchUserById(userUpdateRequest.getId());
-        if(userUpdateRequest.getUsername() != null) user.setUsername(userUpdateRequest.getUsername());
-        if(userUpdateRequest.getEmail() != null) user.setEmail(userUpdateRequest.getEmail());
-        userRepository.save(user);
+        if(!user.isLocked()) {
+            if(userUpdateRequest.getUsername() != null) user.setUsername(userUpdateRequest.getUsername());
+            if(userUpdateRequest.getEmail() != null) user.setEmail(userUpdateRequest.getEmail());
+            userRepository.save(user);
+        }
+        throw new UserNotLoggedInException("User not logged in. Please login and try again");
     }
 
     @Override
     public void deleteUser(int id) {
-        Optional<User> user = userRepository.findById(id);
-        user.ifPresent(value -> userRepository.delete(value));
+       User user = searchUserById(id);
+        if(!user.isLocked()) {
+            userRepository.delete(user);
+        }
+        throw new UserNotLoggedInException("User not logged in. Please login and try again");
     }
 
     @Override
     public void updateTask(UserTaskUpdateRequest userTaskUpdateRequest) {
-        taskService.updateTask(map(userTaskUpdateRequest));
-        userRepository.save(searchUserById(userTaskUpdateRequest.getUserId()));
+        if(!searchUserById(userTaskUpdateRequest.getUserId()).isLocked()) {
+            taskService.updateTask(map(userTaskUpdateRequest));
+            userRepository.save(searchUserById(userTaskUpdateRequest.getUserId()));
+        }else
+            throw new UserNotLoggedInException("User not logged in. Please login and try again");
     }
 
 
