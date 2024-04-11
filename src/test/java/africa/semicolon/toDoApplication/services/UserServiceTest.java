@@ -8,6 +8,7 @@ import africa.semicolon.toDoApplication.datas.repositories.UserRepository;
 import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
+import africa.semicolon.toDoApplication.exception.EmailAlreadyRegisteredException;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
 import africa.semicolon.toDoApplication.exception.UserNotFoundException;
 import africa.semicolon.toDoApplication.exception.UserNotLoggedInException;
@@ -240,5 +241,21 @@ public class UserServiceTest {
         })
                 .isInstanceOf(UserNotLoggedInException.class)
                 .hasMessageContaining("User not logged in. Please login and try again");
+    }
+
+    @Test
+    public void createUserWithTheSameEmail_exceptionIsThrownTest(){
+        UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
+        UserRegistrationRequest userRegistrationRequest2 = new UserRegistrationRequest();
+        userRegistrationRequest.setUsername("username");
+        userRegistrationRequest.setEmail("email@email.com");
+        userRegistrationRequest2.setEmail("email@email.com");
+        userRegistrationRequest2.setUsername("NewUsername");
+        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        assertThatThrownBy(()->{
+            userService.registerUser(userRegistrationRequest2);
+        })
+                .isInstanceOf(EmailAlreadyRegisteredException.class)
+                .hasMessageContaining("Email already registered. Please login instead");
     }
 }
