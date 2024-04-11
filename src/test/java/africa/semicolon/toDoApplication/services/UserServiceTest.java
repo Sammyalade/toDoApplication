@@ -21,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -257,5 +258,45 @@ public class UserServiceTest {
         })
                 .isInstanceOf(EmailAlreadyRegisteredException.class)
                 .hasMessageContaining("Email already registered. Please login instead");
+    }
+
+    @Test
+    public void testFindAll(){
+        UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
+        userRegistrationRequest.setUsername("username");
+        userRegistrationRequest.setEmail("email@email.com");
+        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserTaskCreationRequest userTaskCreationRequest = new UserTaskCreationRequest();
+        userTaskCreationRequest.setUserId(user.getUserId());
+        userTaskCreationRequest.setTitle("Title");
+        userTaskCreationRequest.setDescription("Description");
+        userTaskCreationRequest.setNotificationMessage("Message");
+        userTaskCreationRequest.setDueDate(LocalDate.now());
+        userTaskCreationRequest.setNotificationTime(LocalTime.now());
+        userService.createTask(userTaskCreationRequest);
+        List<Task> tasks = userService.getAllTasks(user.getUserId());
+        assertThat(userService.getAllTasks(user.getUserId()), is(tasks));
+    }
+
+    @Test
+    public void findAllWhenUserIsLoggedOut_exceptionIsThrownTest(){
+        UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
+        userRegistrationRequest.setUsername("username");
+        userRegistrationRequest.setEmail("email@email.com");
+        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserTaskCreationRequest userTaskCreationRequest = new UserTaskCreationRequest();
+        userTaskCreationRequest.setUserId(user.getUserId());
+        userTaskCreationRequest.setTitle("Title");
+        userTaskCreationRequest.setDescription("Description");
+        userTaskCreationRequest.setNotificationMessage("Message");
+        userTaskCreationRequest.setDueDate(LocalDate.now());
+        userTaskCreationRequest.setNotificationTime(LocalTime.now());
+        userService.createTask(userTaskCreationRequest);
+        userService.logoutUser(user.getUserId());
+        assertThatThrownBy(()-> {
+            userService.getAllTasks(user.getUserId());
+        })
+                .isInstanceOf(UserNotLoggedInException.class)
+                .hasMessageContaining("User not logged in. Please login and try again");
     }
 }
