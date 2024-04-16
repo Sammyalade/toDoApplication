@@ -1,9 +1,6 @@
 package africa.semicolon.toDoApplication.datas.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -11,6 +8,7 @@ import lombok.Data;
 @Table(name="user_table")
 public class User {
     @Id
+    @GeneratedValue
     private int id;
     private String username;
     private String email;

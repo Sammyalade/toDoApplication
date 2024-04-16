@@ -10,6 +10,7 @@ import java.util.List;
 @Table(name = "task_list_table")
 public class TaskList {
     @Id
+    @GeneratedValue
     private int id;
 
     @OneToMany(cascade = CascadeType.ALL)

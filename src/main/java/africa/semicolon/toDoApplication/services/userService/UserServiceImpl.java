@@ -12,6 +12,7 @@ import africa.semicolon.toDoApplication.exception.EmailAlreadyRegisteredExceptio
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
 import africa.semicolon.toDoApplication.exception.UserNotFoundException;
 import africa.semicolon.toDoApplication.exception.UserNotLoggedInException;
+import africa.semicolon.toDoApplication.services.EmailService;
 import africa.semicolon.toDoApplication.services.taskList.TaskListService;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,15 +33,37 @@ public class UserServiceImpl implements UserService {
     private TaskListService taskListService;
     @Autowired
     private TaskService taskService;
+    @Autowired
+    private EmailService emailVerificationService;
 
+    @Override
     public UserRegistrationResponse registerUser(UserRegistrationRequest userRegistrationRequest) {
-        if (isEmptyOrNullString(userRegistrationRequest.getUsername())) throw new EmptyStringException("Username cannot be null or empty");
-        if(userRepository.findByEmail(userRegistrationRequest.getEmail()) != null)
-            throw new EmailAlreadyRegisteredException("Email already registered. Please login instead");
+        checkEmptyUsername(userRegistrationRequest.getUsername());
+        checkIfEmailExist(userRegistrationRequest.getEmail());
+        emailVerificationService.sendVerificationEmail(userRegistrationRequest.getEmail(), userRegistrationRequest.getUsername());
         User user = map(userRegistrationRequest);
         taskListService.save(user.getTaskList());
         userRepository.save(user);
         return map(user);
+    }
+
+    @Override
+    public boolean verifyEmail(String verificationCode){
+        return emailVerificationService.verifyEmail(verificationCode);
+    }
+
+
+
+    private void checkIfEmailExist(String email) {
+        if (userRepository.findByEmail(email) != null) {
+            throw new EmailAlreadyRegisteredException("Email already registered. Please login instead");
+        }
+    }
+
+    private static void checkEmptyUsername(String username) {
+        if (isEmptyOrNullString(username)) {
+            throw new EmptyStringException("Username cannot be null or empty");
+        }
     }
 
     @Override
@@ -50,6 +73,7 @@ public class UserServiceImpl implements UserService {
             TaskCreationRequest taskCreationRequest = map(userTaskCreationRequest);
             Task task = taskService.createTask(taskCreationRequest);
             taskListService.addTaskToTaskList(map(user.getTaskList().getId(), task.getId()));
+            emailVerificationService.sendTaskCreationEmail(user.getEmail(), user.getUsername(), task.getTitle(), task.getNotification().getTime());
             return map(task.getId(), task.getTitle(), task.getNotification().getId());
         }
         throw new UserNotLoggedInException("User not logged in. Please login and try again");
@@ -103,7 +127,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserTaskUpdateResponse updateTask(UserTaskUpdateRequest userTaskUpdateRequest) {
-        if(!searchUserById(userTaskUpdateRequest.getUserId()).isLocked()) {
+        User user = searchUserById(userTaskUpdateRequest.getUserId());
+        if(!user.isLocked()) {
             TaskUpdateRequest taskUpdateRequest = map(userTaskUpdateRequest);
             taskService.updateTask(taskUpdateRequest);
             userRepository.save(searchUserById(userTaskUpdateRequest.getUserId()));
