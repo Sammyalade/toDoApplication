@@ -3,6 +3,7 @@ package africa.semicolon.toDoApplication.services;
 import africa.semicolon.toDoApplication.exception.InvalidEmailException;
 import jakarta.mail.internet.AddressException;
 import jakarta.mail.internet.InternetAddress;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,8 +18,8 @@ public class EmailService {
 
     @Autowired
     private JavaMailSender javaMailSender;
-
-    private String verificationCode
+    @Getter
+    private String verificationCode;
 
     public String generateVerificationCode() {
         return UUID.randomUUID().toString().substring(0, 6);
