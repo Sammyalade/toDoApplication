@@ -19,13 +19,23 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/register")
+    @PostMapping("/startRegistration")
     public ResponseEntity<?> register(@RequestBody UserRegistrationRequest userRegistrationRequest) {
         try{
-            UserRegistrationResponse response = userService.registerUser(userRegistrationRequest);
-            return new ResponseEntity<>(new UserApiResponse(true, response), CREATED);
+           userService.startRegistration(userRegistrationRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, "Please verify your email to continue"), CREATED);
         }
         catch(TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PatchMapping("/completeRegistration/{verificationCode}")
+    public ResponseEntity<?> completeRegistration(@PathVariable("verificationCode") String verificationCode) {
+        try {
+            UserRegistrationResponse response = userService.completeRegistration(verificationCode);
+            return new ResponseEntity<>(new UserApiResponse(true, response), ACCEPTED);
+        } catch (TodoApplicationException e){
             return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
@@ -45,7 +55,7 @@ public class UserController {
     public ResponseEntity<?> updateTask(@RequestBody UserTaskUpdateRequest userTaskUpdateRequest) {
         try{
             UserTaskUpdateResponse userTaskUpdateResponse = userService.updateTask(userTaskUpdateRequest);
-            return new ResponseEntity<>(new UserApiResponse(true, userTaskUpdateResponse), CREATED);
+            return new ResponseEntity<>(new UserApiResponse(true, userTaskUpdateResponse), ACCEPTED);
         } catch (TodoApplicationException e){
             return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
@@ -75,7 +85,7 @@ public class UserController {
     public ResponseEntity<?> updateUser(@RequestBody UserUpdateRequest userUpdateRequest){
         try{
             UserUpdateResponse userUpdateResponse = userService.updateUser(userUpdateRequest);
-            return new ResponseEntity<>(new UserApiResponse(true, userUpdateResponse), CREATED);
+            return new ResponseEntity<>(new UserApiResponse(true, userUpdateResponse), OK);
         } catch (TodoApplicationException e) {
             return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
