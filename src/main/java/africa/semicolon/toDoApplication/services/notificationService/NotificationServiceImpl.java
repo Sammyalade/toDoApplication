@@ -5,6 +5,7 @@ import africa.semicolon.toDoApplication.datas.repositories.NotificationRepositor
 import africa.semicolon.toDoApplication.dtos.request.NotificationUpdateRequest;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
 import africa.semicolon.toDoApplication.exception.NotificationNotFoundException;
+import africa.semicolon.toDoApplication.services.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
