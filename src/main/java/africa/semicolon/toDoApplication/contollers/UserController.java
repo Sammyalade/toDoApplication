@@ -19,6 +19,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+
+    @GetMapping("/")
+    public String home(){
+        return ("<h1>To Do Application</h1>");
+    }
+
     @PostMapping("/startRegistration")
     public ResponseEntity<?> register(@RequestBody UserRegistrationRequest userRegistrationRequest) {
         try{
