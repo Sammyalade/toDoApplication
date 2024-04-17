@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TaskService taskService;
     @Autowired
-    private EmailService emailVerificationService;
+    private EmailService emailService;
     private UserRegistrationRequest userRegistrationRequest;
 
     @Override
@@ -40,17 +40,42 @@ public class UserServiceImpl implements UserService {
         checkEmptyUsername(userRegistrationRequest.getUsername());
         checkIfEmailExist(userRegistrationRequest.getEmail());
 
-        emailVerificationService.sendVerificationEmail(userRegistrationRequest.getEmail(), userRegistrationRequest.getUsername());
+        emailService.sendVerificationEmail(userRegistrationRequest.getEmail(), userRegistrationRequest.getUsername());
     }
     @Override
     public UserRegistrationResponse completeRegistration(String verificationCode){
-        if(verificationCode.equals(emailVerificationService.getVerificationCode())) {
+        if(verificationCode.equals(emailService.getVerificationCode())) {
             User user = map(userRegistrationRequest);
             taskListService.save(user.getTaskList());
             userRepository.save(user);
             return map(user);
         } else {
             throw new VerificationFailedException("Incorrect Verification Code. Please enter a correct code and try again");
+        }
+    }
+
+    @Override
+    public void sendNotification(Task task) {
+        String message = """
+                Dear %s,
+                                
+                This is to inform you that the following task is due:
+                                
+                Task Name: %s
+                Due Date: %s
+                                
+                Please take necessary action.
+                                
+                Best regards,
+                Your ToDo Application Team
+                """;
+
+        List<User> users = userRepository.findAll();
+        for (User user : users) {
+            if(user.getTaskList().getTasks().contains(task)) {
+                String formattedString = String.format(message, user.getUsername(), task.getTitle(), task.getNotification().getTime());
+                emailService.sendTaskNotificationEmail(user.getEmail(), formattedString);
+            }
         }
     }
 
@@ -74,7 +99,7 @@ public class UserServiceImpl implements UserService {
             TaskCreationRequest taskCreationRequest = map(userTaskCreationRequest);
             Task task = taskService.createTask(taskCreationRequest);
             taskListService.addTaskToTaskList(map(user.getTaskList().getId(), task.getId()));
-            emailVerificationService.sendTaskCreationEmail(user.getEmail(), user.getUsername(), task.getTitle(), task.getNotification().getTime());
+            emailService.sendTaskCreationEmail(user.getEmail(), user.getUsername(), task.getTitle(), task.getNotification().getTime());
             return map(task.getId(), task.getTitle(), task.getNotification().getId());
         }
         throw new UserNotLoggedInException("User not logged in. Please login and try again");
