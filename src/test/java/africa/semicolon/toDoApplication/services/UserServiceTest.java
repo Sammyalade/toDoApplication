@@ -44,7 +44,7 @@ public class UserServiceTest {
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
         userRegistrationRequest.setUsername("username");
         userRegistrationRequest.setEmail("email@email.com");
-        userService.registerUser(userRegistrationRequest);
+        userService.startRegistration(userRegistrationRequest);
         assertThat(userRepository.count(), is(1L));
     }
 
@@ -53,7 +53,7 @@ public class UserServiceTest {
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
         userRegistrationRequest.setUsername("username");
         userRegistrationRequest.setEmail("email@email.com");
-        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserRegistrationResponse user = userService.startRegistration(userRegistrationRequest);
         UserTaskCreationRequest userTaskCreationRequest = new UserTaskCreationRequest();
         userTaskCreationRequest.setUserId(user.getUserId());
         userTaskCreationRequest.setTitle("Title");
@@ -73,7 +73,7 @@ public class UserServiceTest {
         userRegistrationRequest.setUsername(null);
         userRegistrationRequest.setEmail("email@email.com");
         assertThatThrownBy(()->{
-            userService.registerUser(userRegistrationRequest);
+            userService.startRegistration(userRegistrationRequest);
         })
                 .isInstanceOf(EmptyStringException.class)
                 .hasMessageContaining("Username cannot be null or empty");
@@ -86,7 +86,7 @@ public class UserServiceTest {
         userRegistrationRequest.setUsername("");
         userRegistrationRequest.setEmail("email@email.com");
         assertThatThrownBy(()->{
-            userService.registerUser(userRegistrationRequest);
+            userService.startRegistration(userRegistrationRequest);
         })
                 .isInstanceOf(EmptyStringException.class)
                 .hasMessageContaining("Username cannot be null or empty");
@@ -98,7 +98,7 @@ public class UserServiceTest {
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
         userRegistrationRequest.setUsername("username");
         userRegistrationRequest.setEmail("email@email.com");
-        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserRegistrationResponse user = userService.startRegistration(userRegistrationRequest);
         UserTaskCreationRequest userTaskCreationRequest = new UserTaskCreationRequest();
         userTaskCreationRequest.setUserId(user.getUserId());
         userTaskCreationRequest.setTitle("Title");
@@ -141,7 +141,7 @@ public class UserServiceTest {
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
         userRegistrationRequest.setUsername("username");
         userRegistrationRequest.setEmail("email@email.com");
-        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserRegistrationResponse user = userService.startRegistration(userRegistrationRequest);
         UserLoginRequest userLoginRequest = new UserLoginRequest();
         userLoginRequest.setId(user.getUserId());
         userLoginRequest.setEmail(user.getEmail());
@@ -154,7 +154,7 @@ public class UserServiceTest {
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
         userRegistrationRequest.setUsername("username");
         userRegistrationRequest.setEmail("email@email.com");
-        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserRegistrationResponse user = userService.startRegistration(userRegistrationRequest);
         UserLoginRequest userLoginRequest = new UserLoginRequest();
         userLoginRequest.setId(user.getUserId());
         userLoginRequest.setEmail(user.getEmail());
@@ -168,7 +168,7 @@ public class UserServiceTest {
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
         userRegistrationRequest.setUsername("username");
         userRegistrationRequest.setEmail("email@email.com");
-        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserRegistrationResponse user = userService.startRegistration(userRegistrationRequest);
         UserLoginRequest userLoginRequest = new UserLoginRequest();
         userLoginRequest.setId(user.getUserId());
         userLoginRequest.setEmail(user.getEmail());
@@ -183,7 +183,7 @@ public class UserServiceTest {
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
         userRegistrationRequest.setUsername("username");
         userRegistrationRequest.setEmail("email@email.com");
-        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserRegistrationResponse user = userService.startRegistration(userRegistrationRequest);
         UserUpdateRequest userUpdateRequest = new UserUpdateRequest();
         userUpdateRequest.setId(user.getUserId());
         userUpdateRequest.setEmail("myEmail@email.com");
@@ -198,7 +198,7 @@ public class UserServiceTest {
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
         userRegistrationRequest.setUsername("username");
         userRegistrationRequest.setEmail("email@email.com");
-        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserRegistrationResponse user = userService.startRegistration(userRegistrationRequest);
         UserLoginRequest userLoginRequest = new UserLoginRequest();
         userLoginRequest.setId(user.getUserId());
         userLoginRequest.setEmail(user.getEmail());
@@ -220,7 +220,7 @@ public class UserServiceTest {
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
         userRegistrationRequest.setUsername("username");
         userRegistrationRequest.setEmail("email@email.com");
-        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserRegistrationResponse user = userService.startRegistration(userRegistrationRequest);
         userService.logoutUser(user.getUserId());
         UserTaskCreationRequest userTaskCreationRequest = new UserTaskCreationRequest();
         assertThatThrownBy(()->{
@@ -235,7 +235,7 @@ public class UserServiceTest {
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
         userRegistrationRequest.setUsername("username");
         userRegistrationRequest.setEmail("email@email.com");
-        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserRegistrationResponse user = userService.startRegistration(userRegistrationRequest);
         userService.logoutUser(user.getUserId());
         assertThatThrownBy(()->{
             userService.deleteUser(user.getUserId());
@@ -252,9 +252,9 @@ public class UserServiceTest {
         userRegistrationRequest.setEmail("email@email.com");
         userRegistrationRequest2.setEmail("email@email.com");
         userRegistrationRequest2.setUsername("NewUsername");
-        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserRegistrationResponse user = userService.startRegistration(userRegistrationRequest);
         assertThatThrownBy(()->{
-            userService.registerUser(userRegistrationRequest2);
+            userService.startRegistration(userRegistrationRequest2);
         })
                 .isInstanceOf(EmailAlreadyRegisteredException.class)
                 .hasMessageContaining("Email already registered. Please login instead");
@@ -265,7 +265,7 @@ public class UserServiceTest {
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
         userRegistrationRequest.setUsername("username");
         userRegistrationRequest.setEmail("email@email.com");
-        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserRegistrationResponse user = userService.startRegistration(userRegistrationRequest);
         UserTaskCreationRequest userTaskCreationRequest = new UserTaskCreationRequest();
         userTaskCreationRequest.setUserId(user.getUserId());
         userTaskCreationRequest.setTitle("Title");
@@ -283,7 +283,7 @@ public class UserServiceTest {
         UserRegistrationRequest userRegistrationRequest = new UserRegistrationRequest();
         userRegistrationRequest.setUsername("username");
         userRegistrationRequest.setEmail("email@email.com");
-        UserRegistrationResponse user = userService.registerUser(userRegistrationRequest);
+        UserRegistrationResponse user = userService.startRegistration(userRegistrationRequest);
         UserTaskCreationRequest userTaskCreationRequest = new UserTaskCreationRequest();
         userTaskCreationRequest.setUserId(user.getUserId());
         userTaskCreationRequest.setTitle("Title");
