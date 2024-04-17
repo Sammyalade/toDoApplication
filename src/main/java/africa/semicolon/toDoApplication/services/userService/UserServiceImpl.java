@@ -8,10 +8,7 @@ import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserTaskUpdateResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserUpdateResponse;
-import africa.semicolon.toDoApplication.exception.EmailAlreadyRegisteredException;
-import africa.semicolon.toDoApplication.exception.EmptyStringException;
-import africa.semicolon.toDoApplication.exception.UserNotFoundException;
-import africa.semicolon.toDoApplication.exception.UserNotLoggedInException;
+import africa.semicolon.toDoApplication.exception.*;
 import africa.semicolon.toDoApplication.services.EmailService;
 import africa.semicolon.toDoApplication.services.taskList.TaskListService;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
@@ -35,23 +32,27 @@ public class UserServiceImpl implements UserService {
     private TaskService taskService;
     @Autowired
     private EmailService emailVerificationService;
+    private UserRegistrationRequest userRegistrationRequest;
 
     @Override
-    public UserRegistrationResponse registerUser(UserRegistrationRequest userRegistrationRequest) {
+    public void startRegistration(UserRegistrationRequest userRegistrationRequest) {
+        this.userRegistrationRequest = userRegistrationRequest;
         checkEmptyUsername(userRegistrationRequest.getUsername());
         checkIfEmailExist(userRegistrationRequest.getEmail());
+
         emailVerificationService.sendVerificationEmail(userRegistrationRequest.getEmail(), userRegistrationRequest.getUsername());
-        User user = map(userRegistrationRequest);
-        taskListService.save(user.getTaskList());
-        userRepository.save(user);
-        return map(user);
     }
-
     @Override
-    public boolean verifyEmail(String verificationCode){
-        return emailVerificationService.verifyEmail(verificationCode);
+    public UserRegistrationResponse completeRegistration(String verificationCode){
+        if(verificationCode.equals(emailVerificationService.getVerificationCode())) {
+            User user = map(userRegistrationRequest);
+            taskListService.save(user.getTaskList());
+            userRepository.save(user);
+            return map(user);
+        } else {
+            throw new VerificationFailedException("Incorrect Verification Code. Please enter a correct code and try again");
+        }
     }
-
 
 
     private void checkIfEmailExist(String email) {
@@ -93,8 +94,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void loginUser(UserLoginRequest userLoginRequest) {
         User user = searchUserById(userLoginRequest.getId());
-            if(user.getEmail().equals(userLoginRequest.getEmail())) user.setLocked(false);
-
+            if(user.getEmail().equals(userLoginRequest.getEmail()))
+                user.setLocked(false);
+            throw new UserNotFoundException("User not found");
     }
 
     @Override

@@ -12,9 +12,8 @@ import java.util.List;
 
 public interface UserService {
 
-    UserRegistrationResponse registerUser(UserRegistrationRequest userRegistrationRequest);
-
-    boolean verifyEmail(String verificationCode);
+    void startRegistration(UserRegistrationRequest userRegistrationRequest);
+    UserRegistrationResponse completeRegistration(String verificationCode);
 
     TaskCreationResponse createTask(UserTaskCreationRequest userTaskCreationRequest);
     User searchUserById(int userId);
