@@ -7,10 +7,12 @@ import africa.semicolon.toDoApplication.dtos.request.TaskCreationRequest;
 import africa.semicolon.toDoApplication.dtos.request.TaskUpdateRequest;
 import africa.semicolon.toDoApplication.exception.EmptyStringException;
 import africa.semicolon.toDoApplication.exception.TaskNotFoundException;
+import africa.semicolon.toDoApplication.services.EmailService;
 import africa.semicolon.toDoApplication.services.notificationService.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static africa.semicolon.toDoApplication.utility.Mapper.map;
@@ -22,6 +24,8 @@ public class TaskServiceImpl implements TaskService {
     private TaskRepository taskRepository;
     @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public Task createTask(TaskCreationRequest taskCreationRequest) {
@@ -60,10 +64,15 @@ public class TaskServiceImpl implements TaskService {
         throw new TaskNotFoundException("Task not found");
     }
 
+    @Override
+    public void save(Task task) {
+        taskRepository.save(task);
+    }
 
-
-
-
+    @Override
+    public List<Task> getAllTasks() {
+        return taskRepository.findAll();
+    }
 
 
     private void checkForUpdate(TaskUpdateRequest taskUpdateRequest, Task task) {
