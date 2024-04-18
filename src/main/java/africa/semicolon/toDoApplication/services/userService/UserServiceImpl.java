@@ -4,10 +4,7 @@ import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.models.User;
 import africa.semicolon.toDoApplication.datas.repositories.UserRepository;
 import africa.semicolon.toDoApplication.dtos.request.*;
-import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
-import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
-import africa.semicolon.toDoApplication.dtos.response.UserTaskUpdateResponse;
-import africa.semicolon.toDoApplication.dtos.response.UserUpdateResponse;
+import africa.semicolon.toDoApplication.dtos.response.*;
 import africa.semicolon.toDoApplication.exception.*;
 import africa.semicolon.toDoApplication.services.EmailService;
 import africa.semicolon.toDoApplication.services.taskList.TaskListService;
@@ -169,6 +166,24 @@ public class UserServiceImpl implements UserService {
         if(!searchUserById(userId).isLocked()) return taskListService.findAllTask(searchUserById(userId).getTaskList().getId());
         throw new UserNotLoggedInException("User not logged in. Please login and try again");
     }
+
+    @Override
+    public AssignTaskToNewUserResponse assignTaskToNewUser(TaskAssignmentRequest taskAssignment) {
+        User user = userRepository.findByEmail(taskAssignment.getAssigneeEmail());
+        if(user == null){
+            User newUser = new User();
+            newUser.setEmail(taskAssignment.getAssigneeEmail());
+            userRepository.save(newUser);
+            Task task = taskService.createTask(map(taskAssignment));
+            AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
+            addTaskToTaskListRequest.setTaskId(task.getId());
+            addTaskToTaskListRequest.setTaskListId(newUser.getTaskList().getId());
+            taskListService.addTaskToTaskList(addTaskToTaskListRequest);
+            return map()
+        }
+    }
+
+
 
 
 }
