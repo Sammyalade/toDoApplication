@@ -15,6 +15,8 @@ public interface UserService {
     void startRegistration(UserRegistrationRequest userRegistrationRequest);
     UserRegistrationResponse completeRegistration(String verificationCode);
 
+    void sendNotification(Task task);
+
     TaskCreationResponse createTask(UserTaskCreationRequest userTaskCreationRequest);
     User searchUserById(int userId);
     void loginUser(UserLoginRequest userLoginRequest);
@@ -23,4 +25,5 @@ public interface UserService {
     void deleteUser(int id);
     UserTaskUpdateResponse updateTask(UserTaskUpdateRequest taskUpdateRequest);
     List<Task> getAllTasks(int userId);
+    void assignTaskToNewUser(TaskAssignmentRequest taskAssignment);
 }
