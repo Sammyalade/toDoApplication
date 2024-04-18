@@ -42,6 +42,13 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
+    public void sendTaskNotificationEmail(String email, String messageToSend){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Task Notification");
+        message.setText(messageToSend);
+    }
+
     public boolean verifyEmail(String userEnteredCode) {
         return verificationCode.equals(userEnteredCode);
     }
