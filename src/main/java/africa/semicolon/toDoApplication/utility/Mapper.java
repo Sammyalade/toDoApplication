@@ -112,4 +112,13 @@ public class Mapper {
         return userTaskUpdateResponse;
     }
 
+    public static TaskCreationRequest map(TaskAssignmentRequest taskAssignment) {
+        TaskCreationRequest taskCreationRequest = new TaskCreationRequest();
+        taskCreationRequest.setNotificationMessage(taskAssignment.getNotificationMessage());
+        taskCreationRequest.setTitle(taskAssignment.getTitle());
+        taskCreationRequest.setDueDate(taskAssignment.getDueDate());
+        taskCreationRequest.setDescription(taskAssignment.getDescription());
+        return taskCreationRequest;
+    }
+
 }
