@@ -3,9 +3,8 @@ package africa.semicolon.toDoApplication.services.notificationService;
 import africa.semicolon.toDoApplication.datas.models.Notification;
 import africa.semicolon.toDoApplication.datas.repositories.NotificationRepository;
 import africa.semicolon.toDoApplication.dtos.request.NotificationUpdateRequest;
-import africa.semicolon.toDoApplication.exception.EmptyStringException;
-import africa.semicolon.toDoApplication.exception.NotificationNotFoundException;
-import africa.semicolon.toDoApplication.services.EmailService;
+import africa.semicolon.toDoApplication.exceptions.EmptyStringException;
+import africa.semicolon.toDoApplication.exceptions.NotificationNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
