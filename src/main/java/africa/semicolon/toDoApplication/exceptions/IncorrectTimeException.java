@@ -1,4 +1,4 @@
-package africa.semicolon.toDoApplication.exception;
+package africa.semicolon.toDoApplication.exceptions;
 
 public class IncorrectTimeException extends TodoApplicationException{
     public IncorrectTimeException(String message) {
