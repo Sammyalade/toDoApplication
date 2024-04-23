@@ -3,8 +3,8 @@ package africa.semicolon.toDoApplication.services;
 import africa.semicolon.toDoApplication.datas.models.Notification;
 import africa.semicolon.toDoApplication.datas.repositories.NotificationRepository;
 import africa.semicolon.toDoApplication.dtos.request.NotificationUpdateRequest;
-import africa.semicolon.toDoApplication.exception.EmptyStringException;
-import africa.semicolon.toDoApplication.exception.NotificationNotFoundException;
+import africa.semicolon.toDoApplication.exceptions.EmptyStringException;
+import africa.semicolon.toDoApplication.exceptions.NotificationNotFoundException;
 import africa.semicolon.toDoApplication.services.notificationService.NotificationService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,6 +53,8 @@ public class NotificationServiceTest {
     @Test
     public void createNotification_changeTime_timeIsChangedTest(){
         Notification notification = notificationService.createNotification("message");
+        notification.setTime(LocalDateTime.now());
+        notificationService.save(notification);
         NotificationUpdateRequest notificationUpdateRequest = new NotificationUpdateRequest();
         notificationUpdateRequest.setTime(LocalTime.parse("09:00"));
         notificationUpdateRequest.setDate(LocalDate.parse("2021-12-12"));
@@ -60,6 +62,14 @@ public class NotificationServiceTest {
         notificationService.updateNotification(notificationUpdateRequest);
         Notification retrievedNotification = notificationService.searchNotificationById(notification.getId());
         assertThat(retrievedNotification.getTime(), is(LocalDateTime.of(LocalDate.parse("2021-12-12"), LocalTime.parse("09:00"))));
+    }
+
+    @Test
+    public void testThatNotificationTimeAndDateIsSet(){
+        Notification notification = notificationService.createNotification("message");
+        notification.setTime(LocalDateTime.of(LocalDate.parse("2024-04-17"), LocalTime.parse("09:00")));
+        notificationService.save(notification);
+        assertThat(notification.getTime(), is(LocalDateTime.of(LocalDate.parse("2024-04-17"), LocalTime.parse("09:00"))));
     }
 
     @Test
