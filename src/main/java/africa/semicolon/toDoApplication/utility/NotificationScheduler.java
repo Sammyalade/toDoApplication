@@ -1,6 +1,7 @@
 package africa.semicolon.toDoApplication.utility;
 
 import africa.semicolon.toDoApplication.datas.models.Task;
+import africa.semicolon.toDoApplication.services.EmailService;
 import africa.semicolon.toDoApplication.services.notificationService.NotificationService;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
 import africa.semicolon.toDoApplication.services.userService.UserService;
@@ -22,6 +23,8 @@ public class NotificationScheduler {
     private NotificationService notificationService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private EmailService emailService;
 
     @Scheduled(fixedRate = 55000)
     public void checkTasksAndSendNotifications() throws InterruptedException {
