@@ -1,7 +1,5 @@
 package africa.semicolon.toDoApplication.utility;
 
-import africa.semicolon.toDoApplication.dtos.request.TaskNotificationTimeChangeRequest;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -15,15 +13,9 @@ public class Utility {
     }
 
     public static boolean isEmptyOrNullString(String title) {
-        return title == null || title.isEmpty();
+        return title == null || title.isEmpty() || title.isBlank();
     }
 
-    public static TaskNotificationTimeChangeRequest map(int id, LocalDate date){
-        TaskNotificationTimeChangeRequest taskNotificationTimeChangeRequest = new TaskNotificationTimeChangeRequest();
-        taskNotificationTimeChangeRequest.setId(id);
-        taskNotificationTimeChangeRequest.setTime(date);
-        return taskNotificationTimeChangeRequest;
-    }
 
     public static List<?> checkIfListIsNull(List<?> lists) {
         if(lists == null) lists = new ArrayList<>();
