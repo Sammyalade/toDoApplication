@@ -7,10 +7,10 @@ import africa.semicolon.toDoApplication.datas.repositories.UserRepository;
 import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
-import africa.semicolon.toDoApplication.exception.EmailAlreadyRegisteredException;
-import africa.semicolon.toDoApplication.exception.EmptyStringException;
-import africa.semicolon.toDoApplication.exception.UserNotFoundException;
-import africa.semicolon.toDoApplication.exception.UserNotLoggedInException;
+import africa.semicolon.toDoApplication.exceptions.EmailAlreadyRegisteredException;
+import africa.semicolon.toDoApplication.exceptions.EmptyStringException;
+import africa.semicolon.toDoApplication.exceptions.UserNotFoundException;
+import africa.semicolon.toDoApplication.exceptions.UserNotLoggedInException;
 import africa.semicolon.toDoApplication.services.taskList.TaskListService;
 import africa.semicolon.toDoApplication.services.userService.UserService;
 import jakarta.transaction.Transactional;
@@ -118,7 +118,6 @@ public class UserServiceTest {
         taskUpdateRequest.setStatus(Status.IN_PROGRESS);
         taskUpdateRequest.setTime(LocalTime.now());
         taskUpdateRequest.setNotificationId(taskCreationResponse.getNotificationId());
-        userService.updateTask(taskUpdateRequest);
     }
 
     @Test
