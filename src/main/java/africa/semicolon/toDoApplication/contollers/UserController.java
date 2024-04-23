@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static java.lang.StringTemplate.STR;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
@@ -123,4 +122,121 @@ public class UserController {
             return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
+
+    @PostMapping("/updateTaskDueDate")
+    public ResponseEntity<?> updateTaskDueDate(@RequestBody UserTaskDueDateUpdateRequest userTaskDueDateUpdateRequest){
+        try{
+            userService.updateTaskDueDate(userTaskDueDateUpdateRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, "Update Task Due Date Successful"), OK);
+        } catch(TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/updateTaskTitle")
+    public ResponseEntity<?> updateTaskTitle(@RequestBody UserTaskTitleUpdateRequest userTaskTitleUpdateRequest){
+        try{
+            userService.updateTaskTitle(userTaskTitleUpdateRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, "Update Task Title Successful"), OK);
+        } catch(TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/updateTaskDescription")
+    public ResponseEntity<?> updateTaskDescription(@RequestBody UserTaskDescriptionUpdateRequest userTaskDescriptionUpdateRequest){
+        try{
+            userService.updateTaskDescription(userTaskDescriptionUpdateRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, "Update Task Description Successful"), OK);
+        } catch(TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+
+    @PostMapping("/updateTaskPriority")
+    public ResponseEntity<?> updateTaskPriority(@RequestBody UserTaskPriorityUpdateRequest userTaskPriorityUpdateRequest){
+        try{
+            userService.updateTaskPriority(userTaskPriorityUpdateRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, "Update Task Priority Successful"), OK);
+        } catch(TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/updateTaskStatus")
+    public ResponseEntity<?> updateTaskStatus(@RequestBody UserTaskStatusUpdateRequest userTaskStatusUpdateRequest){
+        try{
+            userService.updateTaskStatus(userTaskStatusUpdateRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, "Update Task Status Successful"), OK);
+        } catch(TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/updateTaskNotificationTime")
+    public ResponseEntity<?> updateTaskNotificationTime(@RequestBody UserNotificationTimeUpdateRequest userNotificationTimeUpdateRequest){
+        try{
+            userService.updateTaskNotificationTime(userNotificationTimeUpdateRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, "Update Task Notification Time Successful"), OK);
+        } catch(TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @GetMapping("/searchTaskByStatus")
+    public ResponseEntity<?> searchTaskByStatus(@RequestBody SearchByStatusRequest searchByStatusRequest){
+        try {
+            List<Task> tasks = userService.searchTaskByStatus(searchByStatusRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, tasks), OK);
+        } catch (TodoApplicationException e) {
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+
+    @GetMapping("/searchTaskByPriority")
+    public ResponseEntity<?> searchTaskByPriority(@RequestBody SearchByPriorityRequest searchByPriorityRequest){
+        try {
+            List<Task> tasks = userService.searchTaskByPriority(searchByPriorityRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, tasks), OK);
+        } catch (TodoApplicationException e) {
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+
+    @GetMapping("/searchTaskByTitle")
+    public ResponseEntity<?> searchTaskByTitle(@RequestBody SearchByTitleRequest searchByTitleRequest){
+        try {
+            List<Task> tasks = userService.searchTaskByTitle(searchByTitleRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, tasks), OK);
+        } catch (TodoApplicationException e) {
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+
+    @GetMapping("/searchTaskByDueDate")
+    public ResponseEntity<?> searchTaskByDueDate(@RequestBody SearchByDueDateRequest searchByDueDateRequest){
+        try {
+            List<Task> tasks = userService.searchTaskByDueDate(searchByDueDateRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, tasks), OK);
+        } catch (TodoApplicationException e) {
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PatchMapping("/deleteTask")
+    public ResponseEntity<?> deleteTask(@RequestBody TaskDeleteRequest taskDeleteRequest){
+        try{
+            userService.deleteTask(taskDeleteRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, "Delete Task Successful"), OK);
+        } catch(TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+
+
 }
