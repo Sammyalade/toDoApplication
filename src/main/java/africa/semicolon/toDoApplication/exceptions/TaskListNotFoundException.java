@@ -1,6 +1,4 @@
-package africa.semicolon.toDoApplication.exception;
-
-import africa.semicolon.toDoApplication.exception.TodoApplicationException;
+package africa.semicolon.toDoApplication.exceptions;
 
 public class TaskListNotFoundException extends TodoApplicationException {
     public TaskListNotFoundException(String message) {
