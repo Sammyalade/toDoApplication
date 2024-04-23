@@ -1,4 +1,4 @@
-package africa.semicolon.toDoApplication.exception;
+package africa.semicolon.toDoApplication.exceptions;
 
 public class TaskNotFoundException extends TodoApplicationException {
 
