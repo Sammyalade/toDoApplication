@@ -4,7 +4,7 @@ import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.models.TaskList;
 import africa.semicolon.toDoApplication.datas.repositories.TaskListRepository;
 import africa.semicolon.toDoApplication.dtos.request.AddTaskToTaskListRequest;
-import africa.semicolon.toDoApplication.exception.TaskListNotFoundException;
+import africa.semicolon.toDoApplication.exceptions.TaskListNotFoundException;
 import africa.semicolon.toDoApplication.services.taskService.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +25,7 @@ public class TaskListServiceImpl implements TaskListService{
     @Override
     public TaskList createTaskList() {
         TaskList taskList = new TaskList();
+        taskList.setTasks((List<Task>) checkIfListIsNull(taskList.getTasks()));
         taskListRepository.save(taskList);
         return taskList;
     }
@@ -32,7 +33,6 @@ public class TaskListServiceImpl implements TaskListService{
     @Override
     public void addTaskToTaskList(AddTaskToTaskListRequest addTaskToTaskListRequest) {
         TaskList taskList = searchForTaskList(addTaskToTaskListRequest.getTaskListId());
-        taskList.setTasks((List<Task>) checkIfListIsNull(taskList.getTasks()));
         Task task = taskService.searchForTaskById(addTaskToTaskListRequest.getTaskId());
         taskList.getTasks().add(task);
         taskListRepository.save(taskList);
