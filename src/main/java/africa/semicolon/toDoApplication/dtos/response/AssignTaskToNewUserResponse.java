@@ -5,11 +5,10 @@ import lombok.Data;
 @Data
 public class AssignTaskToNewUserResponse {
 
-    private String newUserId;
-    private String assignorEmail;
+    private int newUserId;
     private String assignorUsername;
-    private String assigneeEmail;
+    private String assigneeUsername;
     private String taskName;
-    private String taskId;
+    private int taskId;
 
 }
