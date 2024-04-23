@@ -3,7 +3,7 @@ package africa.semicolon.toDoApplication.contollers;
 import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.*;
-import africa.semicolon.toDoApplication.exception.TodoApplicationException;
+import africa.semicolon.toDoApplication.exceptions.TodoApplicationException;
 import africa.semicolon.toDoApplication.services.userService.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static java.lang.StringTemplate.STR;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
@@ -46,32 +47,11 @@ public class UserController {
         }
     }
 
-    @PostMapping("/createTask")
-    public ResponseEntity<?> createTask(@RequestBody UserTaskCreationRequest userRegistrationRequest) {
-        try{
-            TaskCreationResponse response = userService.createTask(userRegistrationRequest);
-            return new ResponseEntity<>(new UserApiResponse(true, response), CREATED);
-        }
-        catch(TodoApplicationException e){
-            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
-        }
-    }
-
-    @PostMapping("/updateTask")
-    public ResponseEntity<?> updateTask(@RequestBody UserTaskUpdateRequest userTaskUpdateRequest) {
-        try{
-            UserTaskUpdateResponse userTaskUpdateResponse = userService.updateTask(userTaskUpdateRequest);
-            return new ResponseEntity<>(new UserApiResponse(true, userTaskUpdateResponse), ACCEPTED);
-        } catch (TodoApplicationException e){
-            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
-        }
-    }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserLoginRequest userLoginRequest){
         try{
             userService.loginUser(userLoginRequest);
-            return new ResponseEntity<>(new UserApiResponse(true, STR.process(StringTemplate.of("Login Successful"))), ACCEPTED);
+            return new ResponseEntity<>(new UserApiResponse(true,"Login Successful"), ACCEPTED);
         } catch(TodoApplicationException e){
             return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
@@ -81,7 +61,7 @@ public class UserController {
     public ResponseEntity<?> logout(@PathVariable("id") int id){
         try{
             userService.logoutUser(id);
-            return new ResponseEntity<>(new UserApiResponse(true, STR.process(StringTemplate.of("Logout Successful"))), ACCEPTED);
+            return new ResponseEntity<>(new UserApiResponse(true, "Logout Successful"), ACCEPTED);
         } catch(TodoApplicationException e){
             return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
@@ -107,12 +87,39 @@ public class UserController {
         }
     }
 
+
+
+
+
+
+    @PostMapping("/createTask")
+    public ResponseEntity<?> createTask(@RequestBody UserTaskCreationRequest userRegistrationRequest) {
+        try{
+            TaskCreationResponse response = userService.createTask(userRegistrationRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, response), CREATED);
+        }
+        catch(TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+
     @GetMapping("/getAllTask/{id}")
     public ResponseEntity<?> getAllTask(@PathVariable("id") int id){
         try{
             List<Task> tasks = userService.getAllTasks(id);
             return new ResponseEntity<>(new UserApiResponse(true, tasks), ACCEPTED);
         } catch (TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/assignTaskToNewUser")
+    public ResponseEntity<?> assignTaskToNewUser(@RequestBody TaskAssignmentRequest taskAssignmentRequest){
+        try{
+            AssignTaskToNewUserResponse response = userService.assignTaskToNewUser(taskAssignmentRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, response), CREATED);
+        } catch(TodoApplicationException e){
             return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
