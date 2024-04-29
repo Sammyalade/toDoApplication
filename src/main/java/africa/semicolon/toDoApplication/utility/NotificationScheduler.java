@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Component
 public class NotificationScheduler {
@@ -18,7 +19,6 @@ public class NotificationScheduler {
 
     @Autowired
     private TaskService taskService;
-
     @Autowired
     private NotificationService notificationService;
     @Autowired
@@ -26,7 +26,10 @@ public class NotificationScheduler {
     @Autowired
     private EmailService emailService;
 
-    @Scheduled(fixedRate = 55000)
+    private final Logger logger = Logger.getLogger(NotificationScheduler.class.getName());
+
+
+    @Scheduled(cron = "0 * * * * ?")
     public void checkTasksAndSendNotifications() throws InterruptedException {
         List<Task> tasks = taskService.getAllTasks();
         LocalDateTime currentTime = LocalDateTime.now();
@@ -34,6 +37,7 @@ public class NotificationScheduler {
             if (task.getNotification().getTime().isEqual(currentTime) && !task.getNotification().isRead()) {
                 userService.sendNotification(task);
                 AlarmPlayer.playAlarm();
+                logger.info(task.getNotification().getMessage());
                 task.getNotification().setRead(true);
                 notificationService.save(task.getNotification());
                 taskService.save(task);
