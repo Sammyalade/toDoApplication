@@ -7,9 +7,10 @@ import java.io.File;
 
 public class AlarmPlayer {
 
+
     public static void playAlarm() {
         try {
-            File alarmFile = new File("C:\\Users\\DELL\\IdeaProjects\\toDoApplication\\src\\alarm.wav");
+            File alarmFile = new File("C:\\Users\\DELL\\IdeaProjects\\toDoApplication\\alarm.wav.wav");
             AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(alarmFile);
             Clip clip = AudioSystem.getClip();
             clip.open(audioInputStream);
