@@ -267,7 +267,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<Task> getAllTasks(int userId) {
-        if(!searchUserById(userId).isLocked()) return taskListService.findAllTask(searchUserById(userId).getTaskList().getId());
+        if(!searchUserById(userId).isLocked()) {
+            List<Task> tasks = taskListService.findAllTask(searchUserById(userId).getTaskList().getId());
+            if(tasks.isEmpty()) throw new TodoApplicationException("Task is Empty");
+            return tasks;
+        }
         throw new UserNotLoggedInException("User not logged in. Please login and try again");
     }
 
