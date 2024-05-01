@@ -63,7 +63,8 @@ public class UserServiceImpl implements UserService {
         User user = searchUserById(userUpdateRequest.getId());
         if(!user.isLocked()) {
             if(userUpdateRequest.getUsername() != null) user.setUsername(userUpdateRequest.getUsername());
-            if(!Objects.equals(userUpdateRequest.getEmail(), user.getEmail())) throw new TodoApplicationException("Email not found");
+            if(!Objects.equals(userUpdateRequest.getEmail(), user.getEmail()))
+                throw new TodoApplicationException("Email not found");
             userRepository.save(user);
             return map(userUpdateRequest);
         }
@@ -119,7 +120,8 @@ public class UserServiceImpl implements UserService {
             TaskCreationRequest taskCreationRequest = map(userTaskCreationRequest);
             Task task = taskService.createTask(taskCreationRequest);
             taskListService.addTaskToTaskList(map(user.getTaskList().getId(), task.getId()));
-            emailService.sendTaskCreationEmail(user.getEmail(), user.getUsername(), task.getTitle(), task.getNotification().getTime());
+            emailService.sendTaskCreationEmail(user.getEmail(), user.getUsername(), task.getTitle(),
+                    task.getNotification().getTime());
             return map(task.getId(), task.getTitle(), task.getNotification().getId());
         }
         throw new UserNotLoggedInException("User not logged in. Please login and try again");
@@ -231,7 +233,8 @@ public class UserServiceImpl implements UserService {
         List<Task> foundTasks = new ArrayList<>();
         User user = searchUserById(searchByTitleRequest.getUserId());
         for(Task task: user.getTaskList().getTasks()){
-            if (calculateSimilarity(task.getTitle().toLowerCase(), searchByTitleRequest.getTitle().toLowerCase()) <= 2) {
+            if (calculateSimilarity(task.getTitle().toLowerCase(),
+                    searchByTitleRequest.getTitle().toLowerCase()) <= 2) {
                 foundTasks.add(task);
             }
         }
@@ -299,7 +302,8 @@ public class UserServiceImpl implements UserService {
 
                 emailService.sendYouAssignedTaskEmail(taskAssignment.getAssignorUsername(),
                         taskAssignment.getAssigneeUsername(), taskAssignment.getAssignorEmail(),
-                        taskAssignment.getTitle(), LocalDateTime.of(taskAssignment.getDueDate(), taskAssignment.getNotificationTime()));
+                        taskAssignment.getTitle(), LocalDateTime.of(taskAssignment.getDueDate(),
+                                taskAssignment.getNotificationTime()));
 
                 return map(taskAssignment.getAssignorUsername(),
                         taskAssignment.getAssigneeUsername(),
@@ -344,10 +348,17 @@ public class UserServiceImpl implements UserService {
                         assignTaskToOldUserRequest.getTitle(), LocalDateTime.of(assignTaskToOldUserRequest.getDueDate(),
                                 assignTaskToOldUserRequest.getNotificationTime()));
 
+                emailService.sendTaskAssignmentEmailForOldUser(user.getEmail(), user.getUsername(),
+                        task.getNotification().getTime(), task.getTitle());
 
+                return map(assignor.getId(), task.getTitle(), user.getUsername(), assignor.getUsername());
             }
+            throw new UserNotFoundException("This user is not registered, Please look to assign task to new user");
         }
+        throw new UserNotFoundException("Email not registered");
     }
+
+
 
 
     @Override
@@ -355,7 +366,8 @@ public class UserServiceImpl implements UserService {
         List<User> users = userRepository.findAll();
         for (User user : users) {
             if(user.getTaskList().getTasks().contains(task)) {
-                String formattedString = sendNotificationMessage(user.getUsername(), task.getTitle(), task.getNotification().getTime());
+                String formattedString = sendNotificationMessage(user.getUsername(), task.getTitle(),
+                        task.getNotification().getTime());
                 emailService.sendTaskNotificationEmail(user.getEmail(), formattedString);
             }
         }
