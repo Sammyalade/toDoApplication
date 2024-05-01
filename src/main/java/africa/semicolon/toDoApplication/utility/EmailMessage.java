@@ -92,4 +92,27 @@ public class EmailMessage {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
         return String.format(message, username, taskTitle, dueDate.format(formatter));
     }
+
+    public static String  sendYouCreatedATaskEmail(String username, String taskTitle, LocalDateTime dueDate, String assignee){
+        String message = """
+                Dear %s,
+                
+                I hope you're doing well. I wanted to inform you that a task has been successfully assigned to [Assignee's Name] based on your request.
+                
+                Task Details:
+                
+                Task Name: %s
+                Assignee: %s
+                Due Date: %s
+                
+                If you have any questions or need further information about this task assignment, please feel free to reach out to me.
+                
+                Thank you for your attention to this matter.
+                
+                Best regards,
+                Your ToDo Application Team
+                """;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy HH:mm");
+        return String.format(message, username, taskTitle, assignee, dueDate.format(formatter));
+    }
 }
