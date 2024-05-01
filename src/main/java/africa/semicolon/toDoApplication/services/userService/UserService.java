@@ -30,6 +30,11 @@ public interface UserService {
     List<Task> searchTaskByTitle(SearchByTitleRequest searchByTitleRequest);
     List<Task> searchTaskByDueDate(SearchByDueDateRequest searchByDueDateRequest);
     void deleteTask(TaskDeleteRequest taskDeleteRequest);
+
+    TaskAcceptanceResponse acceptTaskNewUser(TaskAcceptanceRequest taskAcceptanceRequest);
+
+    AssignTaskToOldUserResponse assignTaskToOldUser(AssignTaskToOldUserRequest assignTaskToOldUserRequest);
+
     void sendNotification(Task task);
     List<Task> getAllTasks(int userId);
     AssignTaskToNewUserResponse assignTaskToNewUser(TaskAssignmentRequest taskAssignment);
