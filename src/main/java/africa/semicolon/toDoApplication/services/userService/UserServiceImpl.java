@@ -6,10 +6,7 @@ import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.models.User;
 import africa.semicolon.toDoApplication.datas.repositories.UserRepository;
 import africa.semicolon.toDoApplication.dtos.request.*;
-import africa.semicolon.toDoApplication.dtos.response.AssignTaskToNewUserResponse;
-import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
-import africa.semicolon.toDoApplication.dtos.response.UserRegistrationResponse;
-import africa.semicolon.toDoApplication.dtos.response.UserUpdateResponse;
+import africa.semicolon.toDoApplication.dtos.response.*;
 import africa.semicolon.toDoApplication.exceptions.*;
 import africa.semicolon.toDoApplication.services.EmailService;
 import africa.semicolon.toDoApplication.services.taskList.TaskListService;
@@ -18,6 +15,7 @@ import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -77,7 +75,7 @@ public class UserServiceImpl implements UserService {
         User user = searchUserById(userLoginRequest.getId());
         if(user.getEmail().equals(userLoginRequest.getEmail()))
             user.setLocked(false);
-        throw new UserNotFoundException("User not found");
+        else throw new UserNotFoundException("User not found");
     }
 
     @Override
@@ -277,22 +275,80 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public AssignTaskToNewUserResponse assignTaskToNewUser(TaskAssignmentRequest taskAssignment) {
-        User user = userRepository.findByEmail(taskAssignment.getAssigneeEmail());
-        if(user == null){
-            User newUser = new User();
-            newUser.setEmail(taskAssignment.getAssigneeEmail());
-            newUser.setUsername(taskAssignment.getAssigneeUsername());
-            userRepository.save(newUser);
-            Task task = taskService.createTask(map(taskAssignment));
-            AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
-            addTaskToTaskListRequest.setTaskId(task.getId());
-            addTaskToTaskListRequest.setTaskListId(newUser.getTaskList().getId());
-            taskListService.addTaskToTaskList(addTaskToTaskListRequest);
-            emailService.sendTaskCreatedEmailToNewUser(taskAssignment.getAssignorUsername(), taskAssignment.getAssigneeUsername(), taskAssignment.getAssigneeEmail());
-            return map(taskAssignment.getAssignorUsername(), taskAssignment.getAssigneeUsername(), taskAssignment.getTitle(), task.getId(), user.getId());
+        User assignor = userRepository.findByEmail(taskAssignment.getAssignorEmail());
+        if(assignor != null) {
+            User user = userRepository.findByEmail(taskAssignment.getAssigneeEmail());
+            if (user == null) {
+                User newUser = new User();
+                newUser.setEmail(taskAssignment.getAssigneeEmail());
+                newUser.setUsername(taskAssignment.getAssigneeUsername());
+                userRepository.save(newUser);
+
+                Task task = taskService.createTask(map(taskAssignment));
+                newUser.setTaskList(taskListService.createTaskList());
+
+
+                AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
+                addTaskToTaskListRequest.setTaskId(task.getId());
+                addTaskToTaskListRequest.setTaskListId(newUser.getTaskList().getId());
+                taskListService.addTaskToTaskList(addTaskToTaskListRequest);
+
+                emailService.sendTaskCreatedEmailToNewUser(taskAssignment.getAssignorUsername(),
+                        taskAssignment.getAssigneeUsername(),
+                        taskAssignment.getAssigneeEmail());
+
+                emailService.sendYouAssignedTaskEmail(taskAssignment.getAssignorUsername(),
+                        taskAssignment.getAssigneeUsername(), taskAssignment.getAssignorEmail(),
+                        taskAssignment.getTitle(), LocalDateTime.of(taskAssignment.getDueDate(), taskAssignment.getNotificationTime()));
+
+                return map(taskAssignment.getAssignorUsername(),
+                        taskAssignment.getAssigneeUsername(),
+                        taskAssignment.getTitle(),
+                        task.getId(),
+                        newUser.getId());
+            }
+
+            throw new EmailAlreadyRegisteredException("Email already registered, Please assign task to existing user");
         }
-        throw new EmailAlreadyRegisteredException("Email already registered, Please assign task to existing user");
+        throw new UserNotFoundException("Email not registered");
     }
+
+    @Override
+    public TaskAcceptanceResponse acceptTaskNewUser(TaskAcceptanceRequest taskAcceptanceRequest){
+        User user = userRepository.findByEmail(taskAcceptanceRequest.getEmail());
+        if(user != null){
+            user.setUsername(taskAcceptanceRequest.getUsername());
+            userRepository.save(user);
+            TaskAcceptanceResponse response = new TaskAcceptanceResponse();
+            response.setUserId(user.getId());
+            return response;
+        }
+        throw new UserNotFoundException("Email not available");
+    }
+
+    @Override
+    public AssignTaskToOldUserResponse assignTaskToOldUser(AssignTaskToOldUserRequest assignTaskToOldUserRequest){
+        User assignor = userRepository.findByEmail(assignTaskToOldUserRequest.getAssignorEmail());
+        if(assignor != null){
+            User user = userRepository.findByEmail(assignTaskToOldUserRequest.getAssigneeEmail());
+            if (user != null) {
+                Task task = taskService.createTask(map(assignTaskToOldUserRequest));
+
+                AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
+                addTaskToTaskListRequest.setTaskId(task.getId());
+                addTaskToTaskListRequest.setTaskListId(user.getTaskList().getId());
+                taskListService.addTaskToTaskList(addTaskToTaskListRequest);
+
+                emailService.sendYouAssignedTaskEmail(assignTaskToOldUserRequest.getAssignorUsername(),
+                        user.getUsername(), assignTaskToOldUserRequest.getAssignorEmail(),
+                        assignTaskToOldUserRequest.getTitle(), LocalDateTime.of(assignTaskToOldUserRequest.getDueDate(),
+                                assignTaskToOldUserRequest.getNotificationTime()));
+
+
+            }
+        }
+    }
+
 
     @Override
     public void sendNotification(Task task) {
