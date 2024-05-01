@@ -9,6 +9,7 @@ import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.exceptions.EmptyStringException;
 import africa.semicolon.toDoApplication.exceptions.NumberNotFoundException;
 import africa.semicolon.toDoApplication.exceptions.TaskNotFoundException;
+import africa.semicolon.toDoApplication.exceptions.TodoApplicationException;
 import africa.semicolon.toDoApplication.services.EmailService;
 import africa.semicolon.toDoApplication.services.notificationService.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,12 +33,21 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task createTask(TaskCreationRequest taskCreationRequest) {
         if(isEmptyOrNullString(taskCreationRequest.getTitle())) throw new EmptyStringException("Task Title cannot be blank, or empty or null");
+        checkUniqueTaskTitle(taskCreationRequest);
         Notification notification = notificationService.createNotification(taskCreationRequest.getNotificationMessage());
         taskCreationRequest.setNotification(notification);
         Task task = map(taskCreationRequest);
         notificationService.save(task.getNotification());
         taskRepository.save(task);
         return task;
+    }
+
+    private void checkUniqueTaskTitle(TaskCreationRequest taskCreationRequest) {
+        for(Task task: taskRepository.findAll()){
+            if(task.getTitle().equals(taskCreationRequest.getTitle().toLowerCase())){
+                throw new TodoApplicationException("Task title has to be unique");
+            }
+        }
     }
 
     @Override
