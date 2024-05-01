@@ -56,6 +56,17 @@ public class EmailService {
         javaMailSender.send(message);
     }
 
+    public void sendYouAssignedTaskEmail(String assignorUsername, String assigneeUsername, String assignorEmail, String taskTitle, LocalDateTime dueDate){
+        checkEmail(assignorEmail);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(assignorEmail);
+        message.setSubject("Task Assignment Notification");
+        String formattedString = sendYouCreatedATaskEmail(assignorUsername, taskTitle, dueDate, assigneeUsername);
+        message.setText(formattedString);
+
+        javaMailSender.send(message);
+    }
+
     private static void checkEmail(String assigneeEmail) {
         try {
             InternetAddress emailAddr = new InternetAddress(assigneeEmail);
