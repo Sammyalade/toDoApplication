@@ -85,5 +85,15 @@ public class EmailService {
 
         javaMailSender.send(message);
     }
+
+    public void sendTaskAssignmentEmailForOldUser(String userEmail, String username, LocalDateTime dueDate, String taskTitle){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(userEmail);
+        message.setSubject(" New Task Assigned to You");
+        String formattedString = sendTaskAssignmentEmail(username, taskTitle, dueDate);
+        message.setText(formattedString);
+
+        javaMailSender.send(message);
+    }
 }
 
