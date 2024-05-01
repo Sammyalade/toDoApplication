@@ -88,6 +88,16 @@ public class Mapper {
         return taskCreationRequest;
     }
 
+    public static TaskCreationRequest map(AssignTaskToOldUserRequest taskAssignment) {
+        TaskCreationRequest taskCreation = new TaskCreationRequest();
+        taskCreation.setNotificationMessage(taskAssignment.getNotificationMessage());
+        taskCreation.setNotificationTime(taskAssignment.getNotificationTime());
+        taskCreation.setTitle(taskAssignment.getTitle());
+        taskCreation.setDueDate(taskAssignment.getDueDate());
+        taskCreation.setDescription(taskAssignment.getDescription());
+        return taskCreation;
+    }
+
     public static AssignTaskToNewUserResponse map(String assignorUsername, String assigneeUsername, String title, int taskId, int userId) {
         AssignTaskToNewUserResponse response = new AssignTaskToNewUserResponse();
         response.setAssigneeUsername(assigneeUsername);
