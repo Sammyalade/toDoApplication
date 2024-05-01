@@ -164,4 +164,13 @@ public class Mapper {
         return taskNotificationUpdateRequest;
     }
 
+    public static AssignTaskToOldUserResponse map(int id, String title, String assigneeUsername, String assignorUsername) {
+        AssignTaskToOldUserResponse response = new AssignTaskToOldUserResponse();
+        response.setAssigneeUsername(assigneeUsername);
+        response.setAssignorUsername(assignorUsername);
+        response.setTaskTitle(title);
+        response.setUserId(id);
+        return response;
+    }
+
 }
