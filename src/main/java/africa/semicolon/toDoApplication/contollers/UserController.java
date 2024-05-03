@@ -123,6 +123,26 @@ public class UserController {
         }
     }
 
+    @PostMapping("/acceptTaskNewUser")
+    public ResponseEntity<?> acceptTaskNewUser(@RequestBody TaskAcceptanceRequest taskAcceptanceRequest){
+        try {
+            TaskAcceptanceResponse taskAcceptanceResponse = userService.acceptTaskNewUser(taskAcceptanceRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, taskAcceptanceResponse), CREATED);
+        } catch (TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/assignTaskToOldUser")
+    public ResponseEntity<?> assignTaskToOldUser(@RequestBody AssignTaskToOldUserRequest assignTaskToOldUserRequest){
+        try {
+            AssignTaskToOldUserResponse response = userService.assignTaskToOldUser(assignTaskToOldUserRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, response), CREATED);
+        } catch (TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
     @PostMapping("/updateTaskDueDate")
     public ResponseEntity<?> updateTaskDueDate(@RequestBody UserTaskDueDateUpdateRequest userTaskDueDateUpdateRequest){
         try{
