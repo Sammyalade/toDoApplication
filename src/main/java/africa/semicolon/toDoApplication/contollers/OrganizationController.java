@@ -1,17 +1,18 @@
 package africa.semicolon.toDoApplication.contollers;
 
-import africa.semicolon.toDoApplication.dtos.request.AddMemberRequest;
-import africa.semicolon.toDoApplication.dtos.request.OrganizationRegisterRequest;
-import africa.semicolon.toDoApplication.dtos.request.OrganizationUpdateRequest;
-import africa.semicolon.toDoApplication.dtos.request.RemoveMemberRequest;
+import africa.semicolon.toDoApplication.datas.models.Task;
+import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.OrganizationRegisterResponse;
 import africa.semicolon.toDoApplication.dtos.response.OrganizationUpdateResponse;
+import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserApiResponse;
 import africa.semicolon.toDoApplication.exceptions.TodoApplicationException;
 import africa.semicolon.toDoApplication.services.organizationService.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -80,6 +81,38 @@ public class OrganizationController {
             return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
         }
     }
+
+    @PostMapping("/createTask")
+    public ResponseEntity<?> createTask(@RequestBody OrganizationTaskAddRequest organizationTaskAddRequest){
+        try{
+            TaskCreationResponse response = organizationService.addTaskToOrganization(organizationTaskAddRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, response), CREATED);
+        } catch (TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/deleteTask")
+    public ResponseEntity<?> deleteTask(@RequestBody OrganizationTaskDeleteRequest request){
+        try{
+            organizationService.deleteTask(request);
+            return new ResponseEntity<>(new UserApiResponse(true, "Task Successfully Deleted"), OK);
+        } catch (TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/getOrganizationTask")
+    public ResponseEntity<?> getOrganizationTask(@RequestBody GetOrganizationTaskRequest request){
+        try{
+            List<Task> tasks = organizationService.getOrganizationTask(request);
+            return new ResponseEntity<>(new UserApiResponse(true, tasks), OK);
+        } catch (TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
+
 
 
 
