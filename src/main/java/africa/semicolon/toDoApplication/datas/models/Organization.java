@@ -14,7 +14,10 @@ public class Organization {
     @GeneratedValue
     private int id;
     private String Name;
+    private String email;
     private String Description;
     @OneToMany
     private List<User> members;
+    @OneToMany
+    private List<Task> tasks;
 }
