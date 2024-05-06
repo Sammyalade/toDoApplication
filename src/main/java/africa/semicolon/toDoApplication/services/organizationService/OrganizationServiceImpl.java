@@ -44,6 +44,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     public OrganizationUpdateResponse completeRegistration(String verificationCode){
         if(verificationCode.equals(emailService.getVerificationCode())) {
             Organization organization = map(organizationRegisterRequest);
+            userService.searchUserById(organizationRegisterRequest.getRegistrarId()).setOrganization(organization);
             organizationRepository.save(organization);
             return (OrganizationUpdateResponse) map(organization);
         }
@@ -100,14 +101,22 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void addMoreMember(AddMemberRequest addMemberRequest){
         Organization organization = searchForOrganization(addMemberRequest.getOrganizationId());
-        organization.getMembers().add(userService.searchUserById(addMemberRequest.getUserId()));
-        organizationRepository.save(organization);
+        User user = userService.searchUserById(addMemberRequest.getUserId());
+        if(user.getOrganization() == null){
+            organization.getMembers().add(user);
+            user.setOrganization(organization);
+            organizationRepository.save(organization);
+        } else throw new SingleOrganizationException("User can only belong to one organization");
     }
 
     @Override
     public void removeMember(RemoveMemberRequest removeMemberRequest){
         Organization organization = searchForOrganization(removeMemberRequest.getOrganizationId());
-        organization.getMembers().remove(userService.searchUserById(removeMemberRequest.getUserId()));
+        User user = userService.searchUserById(removeMemberRequest.getUserId());
+        if(organization.getMembers().contains(user)){
+            user.setOrganization(null);
+            organization.getMembers().remove(user);
+        }
         organizationRepository.save(organization);
     }
 
