@@ -2,7 +2,6 @@ package africa.semicolon.toDoApplication.services.organizationService;
 
 import africa.semicolon.toDoApplication.datas.models.Organization;
 import africa.semicolon.toDoApplication.datas.models.Task;
-import africa.semicolon.toDoApplication.datas.models.User;
 import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.OrganizationUpdateResponse;
 import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
@@ -29,5 +28,5 @@ public interface OrganizationService {
 
     void deleteTask(OrganizationTaskDeleteRequest request);
 
-    List<Task> getOrganizationTask(Organization organization, User user);
+    List<Task> getOrganizationTask(GetOrganizationTaskRequest request);
 }
