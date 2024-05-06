@@ -15,5 +15,7 @@ public class User {
     private boolean isLocked;
     @OneToOne
     private TaskList taskList;
+    @OneToOne
+    private Organization organization;
 
 }
