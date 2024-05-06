@@ -52,6 +52,8 @@ public class OrganizationServiceImpl implements OrganizationService {
 
 
 
+
+
     private void checkOrganizationalEmail(OrganizationRegisterRequest organizationRegisterRequest) {
         for (Organization organization : organizationRepository.findAll()){
             if (organization.getEmail().equals(organizationRegisterRequest.getOrganizationEmail())){
@@ -131,7 +133,9 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public List<Task> getOrganizationTask(Organization organization, User user){
+    public List<Task> getOrganizationTask(GetOrganizationTaskRequest request){
+        User user = userService.searchUserById(request.getUserId());
+        Organization organization = searchForOrganization(request.getOrganizationId());
         if(organization.getMembers().contains(user)){
             return organization.getTasks();
         }
