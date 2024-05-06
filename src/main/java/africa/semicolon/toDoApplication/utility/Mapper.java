@@ -4,6 +4,9 @@ import africa.semicolon.toDoApplication.datas.models.*;
 import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.*;
 
+import java.util.List;
+
+import static africa.semicolon.toDoApplication.utility.Utility.checkIfListIsNull;
 import static africa.semicolon.toDoApplication.utility.Utility.mergeDateAndTime;
 
 public class Mapper {
@@ -171,6 +174,35 @@ public class Mapper {
         response.setTaskTitle(title);
         response.setUserId(id);
         return response;
+    }
+
+    public static Organization map(OrganizationRegisterRequest organizationRegisterRequest) {
+        Organization organization = new Organization();
+        organization.setName(organizationRegisterRequest.getOrganizationName().toLowerCase());
+        organization.setDescription(organizationRegisterRequest.getOrganizationDescription().toLowerCase());
+        organization.setEmail(organizationRegisterRequest.getOrganizationEmail());
+        organization.setMembers((List<User>) checkIfListIsNull(organization.getMembers()));
+        organization.setTasks((List<Task>) checkIfListIsNull(organization.getTasks()));
+        return organization;
+    }
+
+    public static OrganizationRegisterResponse map(Organization organization) {
+        OrganizationRegisterResponse response = new OrganizationRegisterResponse();
+        response.setId(organization.getId());
+        response.setName(organization.getName());
+        response.setEmail(organization.getEmail());
+        response.setDescription(organization.getDescription());
+        return response;
+    }
+
+    public static TaskCreationRequest map(OrganizationTaskAddRequest organizationTaskAddRequest) {
+        TaskCreationRequest request = new TaskCreationRequest();
+        request.setTitle(organizationTaskAddRequest.getTitle());
+        request.setDescription(organizationTaskAddRequest.getDescription());
+        request.setNotificationMessage(organizationTaskAddRequest.getNotificationMessage());
+        request.setNotificationTime(organizationTaskAddRequest.getNotificationTime());
+        request.setDueDate(organizationTaskAddRequest.getDueDate());
+        return request;
     }
 
 }
