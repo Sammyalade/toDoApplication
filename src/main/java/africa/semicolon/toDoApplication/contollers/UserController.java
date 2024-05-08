@@ -20,7 +20,7 @@ public class UserController {
     private UserService userService;
 
 
-    @GetMapping("/")
+    @GetMapping("/home")
     public String home(){
         return ("<h1>To Do Application</h1>");
     }
