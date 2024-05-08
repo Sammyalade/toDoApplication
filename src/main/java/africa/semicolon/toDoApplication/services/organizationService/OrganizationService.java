@@ -14,6 +14,8 @@ public interface OrganizationService {
 
     OrganizationUpdateResponse completeRegistration(String verificationCode);
 
+    void login(OrganizationLoginRequest organizationLoginRequest);
+
     OrganizationUpdateResponse updateOrganizationName(OrganizationUpdateRequest organizationUpdateRequest);
 
     OrganizationUpdateResponse updateOrganizationDescription(OrganizationUpdateRequest organizationUpdateRequest);
@@ -29,4 +31,6 @@ public interface OrganizationService {
     void deleteTask(OrganizationTaskDeleteRequest request);
 
     List<Task> getOrganizationTask(GetOrganizationTaskRequest request);
+
+    List<String> getAllOrganizationMember(GetAllMembersRequest getAllMembersRequest);
 }
