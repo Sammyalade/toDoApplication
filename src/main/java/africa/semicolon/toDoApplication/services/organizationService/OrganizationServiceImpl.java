@@ -14,6 +14,7 @@ import africa.semicolon.toDoApplication.services.userService.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static africa.semicolon.toDoApplication.utility.Mapper.map;
@@ -52,6 +53,11 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
 
+    @Override
+    public void login(OrganizationLoginRequest organizationLoginRequest){
+        User user = userService.searchUserById(organizationLoginRequest.getUserId());
+        if(user.getEmail().equals(organizationLoginRequest.getEmail())) user.setLocked(false);
+    }
 
 
 
@@ -149,5 +155,15 @@ public class OrganizationServiceImpl implements OrganizationService {
             return organization.getTasks();
         }
         throw new UserNotFoundException("You are not member of this organization");
+    }
+
+    @Override
+    public List<String> getAllOrganizationMember(GetAllMembersRequest getAllMembersRequest){
+        List<String> members = new ArrayList<>();
+        List<User> users = searchForOrganization(getAllMembersRequest.getOrganizationId()).getMembers();
+        for(int index = 0; index < users.size(); index++){
+            members.set(index, users.get(index).getUsername());
+        }
+        return members;
     }
 }
