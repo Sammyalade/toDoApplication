@@ -123,13 +123,13 @@ notificationService.updateNotification(map(taskNotificationUpdateRequest, task))
 
 
 
-@Override
-public void deleteTask(int id) {
-Task task = searchForTaskById(id);
-Notification notification = task.getNotification();
-taskRepository.delete(task);
-notificationService.delete(notification);
-}
+    @Override
+    public void deleteTask(int id) {
+        Task task = searchForTaskById(id);
+        Notification notification = task.getNotification();
+        taskRepository.delete(task);
+        notificationService.delete(notification);
+    }
 
 @Override
 public Task searchForTaskById(int id) {
