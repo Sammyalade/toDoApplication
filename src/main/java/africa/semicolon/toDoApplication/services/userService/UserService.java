@@ -38,4 +38,6 @@ public interface UserService {
     void sendNotification(Task task);
     List<Task> getAllTasks(int userId);
     AssignTaskToNewUserResponse assignTaskToNewUser(TaskAssignmentRequest taskAssignment);
+
+    void save(User user);
 }
