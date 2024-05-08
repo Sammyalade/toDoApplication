@@ -42,6 +42,16 @@ public class OrganizationController {
         }
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody OrganizationLoginRequest organizationLoginRequest){
+        try {
+            organizationService.login(organizationLoginRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, organizationLoginRequest), OK);
+        } catch (TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
+
     @PostMapping("/updateOrganizationName")
     public ResponseEntity<?> updateOrganizationName(@RequestBody OrganizationUpdateRequest organizationUpdateRequest) {
         try{
@@ -113,9 +123,13 @@ public class OrganizationController {
     }
 
 
-
-
-
-
-
+    @PostMapping("/getAllMembers")
+    public ResponseEntity<?> getAllMembers(@RequestBody GetAllMembersRequest getAllMembersRequest){
+        try{
+            List<String> members = organizationService.getAllOrganizationMember(getAllMembersRequest);
+            return new ResponseEntity<>(new UserApiResponse(true, members), OK);
+        } catch (TodoApplicationException e){
+            return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
+        }
+    }
 }
