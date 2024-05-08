@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import static africa.semicolon.toDoApplication.datas.models.Priority.*;
@@ -63,8 +62,9 @@ public class UserServiceImpl implements UserService {
         User user = searchUserById(userUpdateRequest.getId());
         if(!user.isLocked()) {
             if(userUpdateRequest.getUsername() != null) user.setUsername(userUpdateRequest.getUsername());
-            if(!Objects.equals(userUpdateRequest.getEmail(), user.getEmail()))
+            if(!userUpdateRequest.getEmail().equals(user.getEmail())) {
                 throw new TodoApplicationException("Email not found");
+            }
             userRepository.save(user);
             return map(userUpdateRequest);
         }
@@ -247,7 +247,7 @@ public class UserServiceImpl implements UserService {
         List<Task> foundTasks = new ArrayList<>();
         User user = searchUserById(searchByDueDateRequest.getUserId());
         for(Task task: user.getTaskList().getTasks()){
-            if (task.getDueDate() == searchByDueDateRequest.getDueDate()) {
+            if (task.getDueDate().equals(searchByDueDateRequest.getDueDate())) {
                 foundTasks.add(task);
             }
         }
@@ -259,6 +259,7 @@ public class UserServiceImpl implements UserService {
     public void deleteTask(TaskDeleteRequest taskDeleteRequest) {
         User user = searchUserById(taskDeleteRequest.getUserId());
         if(user.getTaskList().getTasks().contains(taskService.searchForTaskById(taskDeleteRequest.getTaskId()))){
+            user.getTaskList().getTasks().remove(taskService.searchForTaskById(taskDeleteRequest.getTaskId()));
             taskService.deleteTask(taskDeleteRequest.getTaskId());
         } else {
             throw new TaskNotFoundException("Task not found");
@@ -429,5 +430,10 @@ public class UserServiceImpl implements UserService {
                     """);
         }
         return priority;
+    }
+
+    @Override
+    public void save(User user){
+        userRepository.save(user);
     }
 }
