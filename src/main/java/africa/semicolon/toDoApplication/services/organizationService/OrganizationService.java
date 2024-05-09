@@ -16,6 +16,8 @@ public interface OrganizationService {
 
     void login(OrganizationLoginRequest organizationLoginRequest);
 
+    void logout(int userId);
+
     OrganizationUpdateResponse updateOrganizationName(OrganizationUpdateRequest organizationUpdateRequest);
 
     OrganizationUpdateResponse updateOrganizationDescription(OrganizationUpdateRequest organizationUpdateRequest);
