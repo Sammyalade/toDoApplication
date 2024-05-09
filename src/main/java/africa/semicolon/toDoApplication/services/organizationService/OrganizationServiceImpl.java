@@ -56,7 +56,20 @@ public class OrganizationServiceImpl implements OrganizationService {
     @Override
     public void login(OrganizationLoginRequest organizationLoginRequest){
         User user = userService.searchUserById(organizationLoginRequest.getUserId());
-        if(user.getEmail().equals(organizationLoginRequest.getEmail())) user.setLocked(false);
+        if (user.getEmail().equals(organizationLoginRequest.getEmail())) {
+            user.setLocked(false);
+            userService.save(user);
+        }
+        else
+            throw new UserNotFoundException("User not found");
+
+    }
+
+    @Override
+    public void logout(int userId){
+        User user = userService.searchUserById(userId);
+        user.setLocked(true);
+        userService.save(user);
     }
 
 
