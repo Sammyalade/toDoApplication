@@ -75,6 +75,7 @@ public class UserServiceTest {
         User newUser = new User();
         newUser.setUsername("username");
         newUser.setEmail("email");
+        newUser.setLocked(true);
         userService.save(newUser);
         UserLoginRequest userLoginRequest = new UserLoginRequest();
         userLoginRequest.setEmail(newUser.getEmail());
