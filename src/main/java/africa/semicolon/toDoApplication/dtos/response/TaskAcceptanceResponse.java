@@ -6,5 +6,5 @@ import lombok.Data;
 public class TaskAcceptanceResponse {
 
     private int userId;
-    private int username;
+    private String username;
 }

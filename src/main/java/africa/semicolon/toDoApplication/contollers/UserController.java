@@ -14,6 +14,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.*;
 
 @RestController
+@CrossOrigin(origins="*")
 @RequestMapping("/toDoApplication")
 public class UserController {
     @Autowired

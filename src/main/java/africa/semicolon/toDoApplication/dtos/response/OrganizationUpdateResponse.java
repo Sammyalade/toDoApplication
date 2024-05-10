@@ -3,6 +3,9 @@ package africa.semicolon.toDoApplication.dtos.response;
 import lombok.Data;
 
 @Data
-public class OrganizationUpdateResponse extends OrganizationRegisterResponse{
-
+public class OrganizationUpdateResponse{
+    private int id;
+    private String Name;
+    private String email;
+    private String Description;
 }

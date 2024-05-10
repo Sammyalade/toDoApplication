@@ -3,7 +3,6 @@ package africa.semicolon.toDoApplication.contollers;
 import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.dtos.request.*;
 import africa.semicolon.toDoApplication.dtos.response.OrganizationRegisterResponse;
-import africa.semicolon.toDoApplication.dtos.response.OrganizationUpdateResponse;
 import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.dtos.response.UserApiResponse;
 import africa.semicolon.toDoApplication.exceptions.TodoApplicationException;
@@ -55,7 +54,7 @@ public class OrganizationController {
     @PostMapping("/updateOrganizationName")
     public ResponseEntity<?> updateOrganizationName(@RequestBody OrganizationUpdateRequest organizationUpdateRequest) {
         try{
-            OrganizationUpdateResponse response = organizationService.updateOrganizationName(organizationUpdateRequest);
+            OrganizationRegisterResponse response = organizationService.updateOrganizationName(organizationUpdateRequest);
             return new ResponseEntity<>(new UserApiResponse(true, response), OK);
         } catch (TodoApplicationException e){
             return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);
@@ -65,7 +64,7 @@ public class OrganizationController {
     @PostMapping("/updateOrganizationDescription")
     public ResponseEntity<?> updateOrganizationDescription(@RequestBody OrganizationUpdateRequest organizationUpdateRequest) {
         try{
-            OrganizationUpdateResponse response = organizationService.updateOrganizationDescription(organizationUpdateRequest);
+            OrganizationRegisterResponse response = organizationService.updateOrganizationDescription(organizationUpdateRequest);
             return new ResponseEntity<>(new UserApiResponse(true, response), OK);
         } catch (TodoApplicationException e){
             return new ResponseEntity<>(new UserApiResponse(false, e.getMessage()), BAD_REQUEST);

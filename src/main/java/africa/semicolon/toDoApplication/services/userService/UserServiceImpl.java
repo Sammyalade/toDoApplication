@@ -290,6 +290,7 @@ public class UserServiceImpl implements UserService {
 
                 Task task = taskService.createTask(map(taskAssignment));
                 newUser.setTaskList(taskListService.createTaskList());
+                assignor.getTaskList().getTasks().add(task);
 
 
                 AddTaskToTaskListRequest addTaskToTaskListRequest = new AddTaskToTaskListRequest();
@@ -326,6 +327,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
             TaskAcceptanceResponse response = new TaskAcceptanceResponse();
             response.setUserId(user.getId());
+            response.setUsername(user.getUsername());
             return response;
         }
         throw new UserNotFoundException("Email not available");
@@ -343,6 +345,7 @@ public class UserServiceImpl implements UserService {
                 addTaskToTaskListRequest.setTaskId(task.getId());
                 addTaskToTaskListRequest.setTaskListId(user.getTaskList().getId());
                 taskListService.addTaskToTaskList(addTaskToTaskListRequest);
+                assignor.getTaskList().getTasks().add(task);
 
                 emailService.sendYouAssignedTaskEmail(assignTaskToOldUserRequest.getAssignorUsername(),
                         user.getUsername(), assignTaskToOldUserRequest.getAssignorEmail(),

@@ -5,7 +5,7 @@ import africa.semicolon.toDoApplication.datas.models.Task;
 import africa.semicolon.toDoApplication.datas.models.User;
 import africa.semicolon.toDoApplication.datas.repositories.OrganizationRepository;
 import africa.semicolon.toDoApplication.dtos.request.*;
-import africa.semicolon.toDoApplication.dtos.response.OrganizationUpdateResponse;
+import africa.semicolon.toDoApplication.dtos.response.OrganizationRegisterResponse;
 import africa.semicolon.toDoApplication.dtos.response.TaskCreationResponse;
 import africa.semicolon.toDoApplication.exceptions.*;
 import africa.semicolon.toDoApplication.services.EmailService;
@@ -42,12 +42,12 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public OrganizationUpdateResponse completeRegistration(String verificationCode){
+    public OrganizationRegisterResponse completeRegistration(String verificationCode){
         if(verificationCode.equals(emailService.getVerificationCode())) {
             Organization organization = map(organizationRegisterRequest);
             userService.searchUserById(organizationRegisterRequest.getRegistrarId()).setOrganization(organization);
             organizationRepository.save(organization);
-            return (OrganizationUpdateResponse) map(organization);
+            return map(organization);
         }
         throw new VerificationFailedException("Incorrect Verification Code. Please enter a correct code and try again");
     }
@@ -92,21 +92,21 @@ public class OrganizationServiceImpl implements OrganizationService {
 
 
     @Override
-    public OrganizationUpdateResponse updateOrganizationName(OrganizationUpdateRequest organizationUpdateRequest){
+    public OrganizationRegisterResponse updateOrganizationName(OrganizationUpdateRequest organizationUpdateRequest){
         if(isEmptyOrNullString(organizationUpdateRequest.getString())) throw new EmptyStringException("Name cannot be empty");
         Organization organization = searchForOrganization(organizationUpdateRequest.getId());
         organization.setName(organizationUpdateRequest.getString());
         organizationRepository.save(organization);
-        return (OrganizationUpdateResponse) map(organization);
+        return map(organization);
     }
 
     @Override
-    public OrganizationUpdateResponse updateOrganizationDescription(OrganizationUpdateRequest organizationUpdateRequest){
+    public OrganizationRegisterResponse updateOrganizationDescription(OrganizationUpdateRequest organizationUpdateRequest){
         if(isEmptyOrNullString(organizationUpdateRequest.getString())) throw new EmptyStringException("Description cannot be empty");
         Organization organization = searchForOrganization(organizationUpdateRequest.getId());
         organization.setDescription(organizationUpdateRequest.getString());
         organizationRepository.save(organization);
-        return (OrganizationUpdateResponse) map(organization);
+        return map(organization);
     }
 
 
@@ -122,9 +122,13 @@ public class OrganizationServiceImpl implements OrganizationService {
         Organization organization = searchForOrganization(addMemberRequest.getOrganizationId());
         User user = userService.searchUserById(addMemberRequest.getUserId());
         if(user.getOrganization() == null){
-            organization.getMembers().add(user);
-            user.setOrganization(organization);
-            organizationRepository.save(organization);
+            if(!organization.getMembers().contains(user)) {
+                organization.getMembers().add(user);
+                user.setOrganization(organization);
+                organizationRepository.save(organization);
+            } else{
+                throw new UserExistInOrganizationException("User already in the organization");
+            }
         } else throw new SingleOrganizationException("User can only belong to one organization");
     }
 
@@ -135,8 +139,10 @@ public class OrganizationServiceImpl implements OrganizationService {
         if(organization.getMembers().contains(user)){
             user.setOrganization(null);
             organization.getMembers().remove(user);
+            organizationRepository.save(organization);
+        } else {
+            throw new TodoApplicationException("Ops, not sure this user belongs here");
         }
-        organizationRepository.save(organization);
     }
 
     @Override
