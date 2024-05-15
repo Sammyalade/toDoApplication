@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
     private EmailService emailService;
     private UserRegistrationRequest userRegistrationRequest;
 
+
     @Override
     public void startRegistration(UserRegistrationRequest userRegistrationRequest) {
         this.userRegistrationRequest = userRegistrationRequest;
